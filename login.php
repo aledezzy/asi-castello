@@ -1,125 +1,104 @@
-<?php
-session_start();
-error_reporting(0);
-include("dbconnection.php");
+<?php session_start();
+
+// Code for login
+include 'includes/config.php';
 if(isset($_POST['login']))
 {
-$ret=mysqli_query($con,"SELECT * FROM user WHERE email='".$_POST['email']."' and password='".$_POST['password']."'");
-$num=mysqli_fetch_array($ret);
-if($num>0)
-{
-$_SESSION['login']=$_POST['email'];
-$_SESSION['id']=$num['id'];
-$_SESSION['name']=$num['name'];
-$val3 =date("Y/m/d");
-date_default_timezone_set("Asia/Calcutta");
-$time=date("h:i:sa");
-$tim = $time;
-$ip_address=$_SERVER['REMOTE_ADDR'];
-$geopluginURL='http://www.geoplugin.net/php.gp?ip='.$ip_address;
-$addrDetailsArr = unserialize(file_get_contents($geopluginURL)); 
-$city = $addrDetailsArr['geoplugin_city']; 
-$country = $addrDetailsArr['geoplugin_countryName'];
-ob_start();
-system('ipconfig /all');
-$mycom=ob_get_contents();
-ob_clean();
-$findme = "Physical";
-$pmac = strpos($mycom, $findme);
-$mac=substr($mycom,($pmac+36),17);
-$ret=mysqli_query($con,"insert into usercheck(logindate,logintime,user_id,username,email,ip,mac,city,country)values('".$val3."','".$tim."','".$_SESSION['id']."','".$_SESSION['name']."','".$_SESSION['login']."','$ip_address','$mac','$city','$country')");
+    $useremail = $_POST['uemail'];
+    $password_from_form = $_POST['password']; // Password entered by user
 
-$extra="dashboard.php";
-echo "<script>window.location.href='".$extra."'</script>";
-exit();
-}
-else
-{
-$_SESSION['action1']="Invalid username or password";
-$extra="login.php";
+    // Use prepared statement to prevent SQL injection
+    // Select the hashed password along with id and fname
+    $stmt = mysqli_prepare($con, "SELECT id, fname, password FROM users WHERE email=?");
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "s", $useremail);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $user_data = mysqli_fetch_assoc($result); // Use fetch_assoc for clarity
 
-echo "<script>window.location.href='".$extra."'</script>";
-exit();
+        // Verify the password
+        if($user_data && password_verify($password_from_form, $user_data['password']))
+        {
+            // Password is correct, set session variables
+            $_SESSION['id'] = $user_data['id'];
+            $_SESSION['name'] = $user_data['fname'];
+            header("location:welcome.php");
+            exit(); // Add exit after redirect
+        }
+        else
+        {
+            // Invalid email or password
+            echo "<script>alert('Username o password sbagliate');</script>";
+        }
+        mysqli_stmt_close($stmt);
+    } else {
+        echo "<script>alert('Errore nella preparazione della query di login. Riprova più tardi.');</script>";
+        // Log the error (optional)
+        // error_log("Login Prepare Error: " . mysqli_error($con));
+    }
 }
-}
+
 ?>
+
 <!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-<meta charset="utf-8" />
-<title>CRM | Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta content="" name="description" />
-<meta content="" name="author" />
-<link href="assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen"/>
-<link href="assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-<link href="assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="assets/css/animate.min.css" rel="stylesheet" type="text/css"/>
-<link href="assets/css/style.css" rel="stylesheet" type="text/css"/>
-<link href="assets/css/responsive.css" rel="stylesheet" type="text/css"/>
-<link href="assets/css/custom-icon-set.css" rel="stylesheet" type="text/css"/>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>User Login</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-primary">
+        <div id="layoutAuthentication">
+            <div id="layoutAuthentication_content">
+                <main>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
 
-</head>
-<body class="error-body no-top">
-<div class="container">
-  <div class="row login-container column-seperation">  
-        <div class="col-md-5 col-md-offset-1">
-          <h2>Sign in to CRM</h2>
-          <p>
-            <a href="registration.php">Sign up Now!</a> for a webarch account,It's free and always will be..</p>
-          <br>
+                                    <div class="card-header">
+                                        <h2 align="center">Login Asi</h2>
+                                        <hr />
+                                        <h3 class="text-center font-weight-light my-4">Login utente</h3>
+                                    </div>
+                                    <div class="card-body">
 
-		   
+                                        <form method="post">
+
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" name="uemail" type="email" placeholder="inserisci la tua email" required/>
+                                                <label for="inputEmail">Indirizzo email</label>
+                                            </div>
+
+                                            <div class="form-floating mb-3">
+                                                <input class="form-control" name="password" type="password" placeholder="Password" required />
+                                                <label for="inputPassword">Password</label>
+                                            </div>
+
+                                            <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                                <a class="small" href="password-recovery.php">Password dimenticata?</a>
+                                                <button class="btn btn-primary" name="login" type="submit">Login</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small"><a href="signup.php">Non hai un account? Creane uno!</a></div>
+                                        <div class="small"><a href="index.php">Torna alla home</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+            <?php include('includes/footer.php');?>
         </div>
-        <div class="col-md-5 "> <br>
-             <p style="color:#F00"><?php echo $_SESSION['action1'];?><?php echo $_SESSION['action1']="";?></p>
-		 <form id="login-form" class="login-form" action="" method="post">
-		 <div class="row">
-		 <div class="form-group col-md-10">
-            <label class="form-label">Email</label>
-            <div class="controls">
-				<div class="input-with-icon  right">                                       
-					<i class=""></i>
-					<input type="email" name="email" id="txtusername" class="form-control" required="true">                                 
-				</div>
-            </div>
-          </div>
-          </div>
-		  <div class="row">
-          <div class="form-group col-md-10">
-            <label class="form-label">Password</label>
-            <span class="help"></span>
-            <div class="controls">
-				<div class="input-with-icon  right">                                       
-					<i class=""></i>
-					<input type="password" name="password" id="txtpassword" class="form-control" required="true">                                 
-				</div>
-            </div>
-          </div>
-          </div>
-		  <div class="row">
-          <div class="control-group  col-md-10">
-            <div class="checkbox checkbox check-success"> <a href="forgot-password.php">Forgot Password </a>&nbsp;&nbsp;
-         </div>
-          </div>
-          </div>
-          <div class="row">
-            <div class="col-md-10">
-              <button class="btn btn-primary btn-cons pull-right" name="login" type="submit">Login</button>
-            </div>
-          </div>
-		  </form>
-        </div>
-     
-    
-  </div>
-</div>
-<script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
-<script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="assets/plugins/pace/pace.min.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="assets/js/login.js" type="text/javascript"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+    </body>
 </html>

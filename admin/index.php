@@ -1,104 +1,89 @@
-<?php
-session_start();
-error_reporting(0);
-include("dbconnection.php");
+<?php session_start(); 
+include_once('../includes/config.php');
+// Code for login 
 if(isset($_POST['login']))
 {
-$ret=mysqli_query($con,"SELECT * FROM admin WHERE name='".$_POST['email']."' and password='".$_POST['password']."'");
+  $adminusername=$_POST['username'];
+  $pass=md5($_POST['password']);
+$ret=mysqli_query($con,"SELECT * FROM admin WHERE username='$adminusername' and password='$pass'");
 $num=mysqli_fetch_array($ret);
 if($num>0)
 {
-$extra="home.php";
-$_SESSION['alogin']=$_POST['email'];
-$_SESSION['id']=$num['id'];
+$extra="dashboard.php";
+$_SESSION['login']=$_POST['username'];
+$_SESSION['adminid']=$num['id'];
 echo "<script>window.location.href='".$extra."'</script>";
 exit();
 }
 else
 {
-$_SESSION['action1']="*Invalid username or password";
+echo "<script>alert('Invalid username or password');</script>";
 $extra="index.php";
-
 echo "<script>window.location.href='".$extra."'</script>";
 exit();
 }
 }
 ?>
+
 <!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-<meta charset="utf-8" />
-<title>CRM | Admin Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<meta content="" name="description" />
-<meta content="" name="author" />
-<link href="../assets/plugins/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" media="screen"/>
-<link href="../assets/plugins/boostrapv3/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/plugins/boostrapv3/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/css/animate.min.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/css/style.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/css/responsive.css" rel="stylesheet" type="text/css"/>
-<link href="../assets/css/custom-icon-set.css" rel="stylesheet" type="text/css"/>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Admin Login | Registration and Login System</title>
+        <link href="../css/styles.css" rel="stylesheet" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-primary">
+        <div id="layoutAuthentication">
+            <div id="layoutAuthentication_content">
+                <main>
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-5">
+                                <div class="card shadow-lg border-0 rounded-lg mt-5">
 
-
-
-
-</head>
-<body class="error-body no-top">
-<div class="container">
-  <div class="row login-container column-seperation">  
-        <div class="col-md-5 col-md-offset-1">
-          <h2>Sign in to CRM Admin</h2>
-         
-          <br>
-
-		   
-        </div>
-        <div class="col-md-5 "> <br>
-		 <form id="login-form" class="login-form" action="" method="post">
-         <p style="color: #F00"><?php echo $_SESSION['action1'];?><?php echo $_SESSION['action1']="";?></p>
-		 <div class="row">
-		 <div class="form-group col-md-10">
-            <label class="form-label">Username</label>
-            <div class="controls">
-				<div class="input-with-icon  right">                                       
-					<i class=""></i>
-					<input type="text" name="email" id="txtusername" class="form-control">                                 
-				</div>
-            </div>
-          </div>
-          </div>
-		  <div class="row">
-          <div class="form-group col-md-10">
-            <label class="form-label">Password</label>
-            <span class="help"></span>
-            <div class="controls">
-				<div class="input-with-icon  right">                                       
-					<i class=""></i>
-					<input type="password" name="password" id="txtpassword" class="form-control">                                 
-				</div>
-            </div>
-          </div>
-          </div>
-          <div class="row">
-            <div class="col-md-10">
-              <button class="btn btn-primary btn-cons pull-right" name="login" type="submit">Login</button>
-            </div>
-          </div>
-		  </form>
-        </div>
-     
-    
-  </div>
+<div class="card-header">
+<h2 align="center">Registration and Login System</h2>
+<hr />
+    <h3 class="text-center font-weight-light my-4">Admin Login</h3></div>
+                                    <div class="card-body">
+                                        
+                                        <form method="post">
+                                            
+<div class="form-floating mb-3">
+<input class="form-control" name="username" type="text" placeholder="Username"  required/>
+<label for="inputEmail">Username</label>
 </div>
-<script src="assets/plugins/jquery-1.8.3.min.js" type="text/javascript"></script>
-<script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="assets/plugins/pace/pace.min.js" type="text/javascript"></script>
-<script src="assets/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-<script src="assets/js/login.js" type="text/javascript"></script>
-    <script type="text/javascript" src="js/highcharts.js"></script>
-	<script type="text/javascript" src="js/exporting.js"></script>	
-</body>
+                                            
+
+<div class="form-floating mb-3">
+<input class="form-control" name="password" type="password" placeholder="Password" required />
+<label for="inputPassword">Password</label>
+</div>
+
+
+<div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+<a class="small" href="password-recovery.php">Forgot Password?</a>
+<button class="btn btn-primary" name="login" type="submit">Login</button>
+</div>
+</form>
+</div>
+                                    <div class="card-footer text-center py-3">
+                                        <div class="small"><a href="../index.php">Back to Home Page</a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+<?php include('../includes/footer.php');?>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="../js/scripts.js"></script>
+    </body>
 </html>
