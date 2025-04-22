@@ -1,28 +1,47 @@
 <?php session_start();
 include_once('../includes/config.php');
-if (strlen($_SESSION['adminid']==0)) {
+
+if (strlen($_SESSION['adminid'] ?? 0) == 0) {
   header('location:logout.php');
-  } else{
-// for deleting user
-if(isset($_GET['id']))
-{
-$adminid=$_GET['id'];
-$msg=mysqli_query($con,"delete from users where id='$adminid'");
-if($msg)
-{
-echo "<script>alert('Data deleted');</script>";
-}
-}
-   ?>
+  exit();
+} else {
+
+    if(isset($_GET['id']))
+    {
+        $userid_to_delete = intval($_GET['id']);
+
+        $stmt_delete = mysqli_prepare($con, "DELETE FROM users WHERE id = ?");
+        if ($stmt_delete) {
+            mysqli_stmt_bind_param($stmt_delete, "i", $userid_to_delete);
+            $success = mysqli_stmt_execute($stmt_delete);
+            mysqli_stmt_close($stmt_delete);
+
+            if($success)
+            {
+
+                echo "<script>alert('Utente eliminato con successo.');</script>";
+
+                echo "<script>window.location.href='manage-users.php'</script>";
+                exit();
+            } else {
+                 echo "<script>alert('Errore durante l'eliminazione dell'utente.');</script>";
+                 error_log("User Deletion Error: " . mysqli_error($con));
+            }
+        } else {
+            echo "<script>alert('Errore nella preparazione della query di eliminazione.');</script>";
+            error_log("User Delete Prepare Error: " . mysqli_error($con));
+        }
+    }
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
+        <meta name="description" content="Gestione Utenti Registrati" />
         <meta name="author" content="" />
-        <title>Manage Users | Registration and Login System</title>
+        <title>Gestisci Utenti</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
@@ -35,68 +54,90 @@ echo "<script>alert('Data deleted');</script>";
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h1 class="mt-4">Manage users</h1>
+                        <h1 class="mt-4">Gestisci Utenti</h1>
                         <ol class="breadcrumb mb-4">
                             <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Manage users</li>
+                            <li class="breadcrumb-item active">Gestisci Utenti</li>
                         </ol>
-            
+
                         <div class="card mb-4">
                             <div class="card-header">
                                 <i class="fas fa-table me-1"></i>
-                                Registered User Details
+                                Dettagli Utenti Registrati
                             </div>
                             <div class="card-body">
                                 <table id="datatablesSimple">
                                     <thead>
                                         <tr>
-                                             <th>Sno.</th>
-                                  <th>First Name</th>
-                                  <th> Last Name</th>
-                                  <th> Email Id</th>
-                                  <th>Contact no.</th>
-                                  <th>Reg. Date</th>
-                                  <th>Action</th>
+                                             <th>#</th>
+                                             <th>Nome</th>
+                                             <th>Cognome</th>
+                                             <th>Email</th>
+                                             <th>Contatto</th>
+                                             <th>Data Reg.</th>
+                                             <th>Azione</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
                                         <tr>
-                                             <th>Sno.</th>
-                                  <th>First Name</th>
-                                  <th> Last Name</th>
-                                  <th> Email Id</th>
-                                  <th>Contact no.</th>
-                                  <th>Reg. Date</th>
-                                  <th>Action</th>
+                                             <th>#</th>
+                                             <th>Nome</th>
+                                             <th>Cognome</th>
+                                             <th>Email</th>
+                                             <th>Contatto</th>
+                                             <th>Data Reg.</th>
+                                             <th>Azione</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
-                                              <?php $ret=mysqli_query($con,"select * from users");
-                              $cnt=1;
-                              while($row=mysqli_fetch_array($ret))
-                              {?>
-                              <tr>
-                              <td><?php echo $cnt;?></td>
-                                  <td><?php echo $row['fname'];?></td>
-                                  <td><?php echo $row['lname'];?></td>
-                                  <td><?php echo $row['email'];?></td>
-                                  <td><?php echo $row['contactno'];?></td>  <td><?php echo $row['posting_date'];?></td>
-                                  <td>
-                                     
-                                     <a href="user-profile.php?uid=<?php echo $row['id'];?>"> 
-                          <i class="fas fa-edit"></i></a>
-                                     <a href="manage-users.php?id=<?php echo $row['id'];?>" onClick="return confirm('Do you really want to delete');"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                  </td>
-                              </tr>
-                              <?php $cnt=$cnt+1; }?>
-                                      
+                                        <?php
+
+                                        $stmt_select = mysqli_prepare($con, "SELECT id, fname, lname, email, contactno, posting_date FROM users");
+                                        if ($stmt_select) {
+                                            mysqli_stmt_execute($stmt_select);
+                                            $result = mysqli_stmt_get_result($stmt_select);
+                                            $cnt = 1;
+
+                                            while($row = mysqli_fetch_assoc($result))
+                                            {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $cnt;?></td>
+
+                                            <td><?php echo htmlspecialchars($row['fname']);?></td>
+                                            <td><?php echo htmlspecialchars($row['lname']);?></td>
+                                            <td><?php echo htmlspecialchars($row['email']);?></td>
+                                            <td><?php echo htmlspecialchars($row['contactno']);?></td>
+                                            <td><?php echo htmlspecialchars($row['posting_date']);?></td>
+                                            <td>
+
+                                                <a href="user-profile.php?uid=<?php echo $row['id'];?>" title="Visualizza/Modifica Profilo">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                &nbsp;
+
+                                                <a href="manage-users.php?id=<?php echo $row['id'];?>"
+                                                   onClick="return confirm('Sei sicuro di voler eliminare questo utente?');" title="Elimina Utente">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                                $cnt=$cnt+1;
+                                            }
+                                            mysqli_stmt_close($stmt_select);
+                                        } else {
+                                            echo "<tr><td colspan='7'>Errore nel recuperare i dati degli utenti.</td></tr>";
+                                            error_log("User Select Prepare Error: " . mysqli_error($con));
+                                        }
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </main>
-  <?php include('../includes/footer.php');?>
+                <?php include('../includes/footer.php');?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

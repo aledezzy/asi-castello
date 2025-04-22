@@ -14,7 +14,7 @@ if (strlen($_SESSION['adminid']==0)) {
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Admin Dashboard | Registration and Login System </title>
+        <title>Admin Dashboard</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="../css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
@@ -38,10 +38,10 @@ $totalusers=mysqli_num_rows($query);
 
                             <div class="col-xl-4 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Total Registered Users 
+                                    <div class="card-body">Totale Utenti Registrati
                                         <span style="font-size:22px;"> <?php echo $totalusers;?></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="manage-users.php">View Details</a>
+                                        <a class="small text-white stretched-link" href="manage-users.php">Visualizza Dettagli</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
@@ -53,10 +53,10 @@ $yesterdayregusers=mysqli_num_rows($query1);
 
                             <div class="col-xl-4 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
-                                    <div class="card-body">Yesterday Registered Users 
+                                    <div class="card-body">Utenti Registrati Ieri 
                                         <span style="font-size:22px;"> <?php echo $yesterdayregusers;?></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="yesterday-reg-users.php">View Details</a>
+                                        <a class="small text-white stretched-link" href="yesterday-reg-users.php">Visualizza Dettagli</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
@@ -69,10 +69,10 @@ $last7daysregusers=mysqli_num_rows($query2);
 
                             <div class="col-xl-4 col-md-6">
                                 <div class="card bg-success text-white mb-4">
-                                    <div class="card-body"> Registered Users in Last 7 Days
+                                    <div class="card-body"> Utenti Registrati Negli Ultimi 7 Giorni
                                         <span style="font-size:22px;"> <?php echo $last7daysregusers;?></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="lastsevendays-reg-users.php">View Details</a>
+                                        <a class="small text-white stretched-link" href="lastsevendays-reg-users.php">Visualizza Dettagli</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
@@ -85,15 +85,27 @@ $last30daysregusers=mysqli_num_rows($query3);
 
                             <div class="col-xl-4 col-md-6">
                                 <div class="card bg-danger text-white mb-4">
-                                    <div class="card-body">Registered Users in Last 30 Days
+                                    <div class="card-body">Utenti Registrati Negli Ultimi 30 Giorni
                                         <span style="font-size:22px;"> <?php echo $last30daysregusers;?></span></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="lastthirtyays-reg-users.php">View Details</a>
+                                        <a class="small text-white stretched-link" href="lastthirtyays-reg-users.php">Visualizza Dettagli</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
+
+                        <div class="col-xl-4 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Gestione Utenti Admin</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="manage-admin.php">Gestisci Utenti</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
                    
                       
                     </div>
