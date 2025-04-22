@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Creato il: Apr 22, 2025 alle 20:35
--- Versione del server: 10.4.28-MariaDB
--- Versione PHP: 8.2.4
+-- Host: 127.0.0.1
+-- Creato il: Apr 22, 2025 alle 23:26
+-- Versione del server: 10.4.32-MariaDB
+-- Versione PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -179,6 +179,8 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(300) DEFAULT NULL,
   `contactno` varchar(11) DEFAULT NULL,
+  `reset_token_hash` varchar(255) DEFAULT NULL,
+  `reset_token_expires_at` datetime DEFAULT NULL,
   `posting_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `is_active` tinyint(1) NOT NULL DEFAULT 0,
   `activation_token` varchar(255) DEFAULT NULL,
@@ -192,9 +194,10 @@ CREATE TABLE `users` (
 -- Dump dei dati per la tabella `users`
 --
 
-INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`, `contactno`, `posting_date`, `is_active`, `activation_token`, `activation_token_expires`, `reset_password_token`, `reset_password_token_expires`, `id_socio`) VALUES
-(5, 'Cristian', 'Masiero', 'gay@gay.it', '$2y$10$26qj.8RLqDKA6bNXYW/3peCDn0kuBfskjVMtWkxZt.KrOSlyjF3CS', '6666666661', '2025-04-22 09:36:08', 1, NULL, NULL, NULL, NULL, NULL),
-(6, 'Mario', 'Rossi', 'nemeli9395@asaption.com', '$2y$10$sLEhR3EGEghfwgIs32siGObw/gQN3rTnyfqBGFOLu7bVFbh9NDrCK', '9999999999', '2025-04-22 12:50:20', 1, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`, `contactno`, `reset_token_hash`, `reset_token_expires_at`, `posting_date`, `is_active`, `activation_token`, `activation_token_expires`, `reset_password_token`, `reset_password_token_expires`, `id_socio`) VALUES
+(5, 'Cristian', 'Masiero', 'gay@gay.it', '$2y$10$26qj.8RLqDKA6bNXYW/3peCDn0kuBfskjVMtWkxZt.KrOSlyjF3CS', '6666666661', NULL, NULL, '2025-04-22 09:36:08', 1, NULL, NULL, NULL, NULL, NULL),
+(6, 'Mario', 'Rossi', 'nemeli9395@asaption.com', '$2y$10$sLEhR3EGEghfwgIs32siGObw/gQN3rTnyfqBGFOLu7bVFbh9NDrCK', '9999999999', NULL, NULL, '2025-04-22 12:50:20', 1, NULL, NULL, NULL, NULL, NULL),
+(7, 'Alessandro', 'De Zuani', 'alessandrodezuani@gmail.com', '$2y$10$YHRk8fQ322eiIEreCbzQk.lt58FsParqr.ChO57dBkBLuWCMSv/ha', '1234567890', NULL, NULL, '2025-04-22 19:37:29', 0, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Indici per le tabelle scaricate
@@ -323,7 +326,7 @@ ALTER TABLE `soci`
 -- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Limiti per le tabelle scaricate
