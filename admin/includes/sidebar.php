@@ -11,17 +11,22 @@
                  
                             <a class="nav-link" href="manage-users.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Manage Users
+                                Gestisci Utenti
                             </a>
 
  <a class="nav-link" href="bwdates-report-ds.php">
                                 <div class="sb-nav-link-icon"><i class="fa fa-calendar"></i></div>
-                                B/w Dates Report
+                                Utenti registrati in data --
+                            </a>
+
+                            <a class="nav-link" href="manage-admin.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Gestisci Admin
                             </a>
 
                             <a class="nav-link" href="logout.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
-                                Signout
+                                Logout
                             </a>
                         </div>
                     </div>

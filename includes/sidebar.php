@@ -11,17 +11,17 @@
                  
                             <a class="nav-link" href="profile.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                                Profile
+                                Profilo
                             </a>
 
   <a class="nav-link" href="change-password.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
-                               Change Password
+                               Cambia Password
                             </a>
 
                             <a class="nav-link" href="logout.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
-                                Signout
+                                Logout
                             </a>
                         </div>
                     </div>
