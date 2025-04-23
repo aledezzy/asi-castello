@@ -3,6 +3,11 @@
 // Code for login
 include 'includes/config.php';
 
+// --- Costanti per il blocco ---
+define('MAX_IP_ATTEMPTS', 5); // Max tentativi falliti per IP
+define('MAX_PASSWORD_ATTEMPTS', 5); // Max tentativi falliti per password (email corretta)
+define('ATTEMPT_TIME_WINDOW_MINUTES', 15); // Intervallo di tempo (in minuti) per contare i tentativi
+
 $login_error_message = ''; // Variabile specifica per errori di login
 
 if(isset($_POST['login']))
@@ -11,48 +16,74 @@ if(isset($_POST['login']))
     $password_from_form = $_POST['password']; // Password entered by user
     $ip_address = $_SERVER['REMOTE_ADDR']; // Get user IP address
     $attempt_timestamp = date('Y-m-d H:i:s'); // Get current timestamp for logging
+    $time_limit_sql = date('Y-m-d H:i:s', time() - (ATTEMPT_TIME_WINDOW_MINUTES * 60)); // Calcola tempo limite per query
 
     // Variables for logging
     $log_user_id = null;
     $log_success = 0; // Default to failure
     $login_denied_reason = ''; // To store reason for denial if applicable
 
-    // --- CHECK 1: Banned IP ---
-    $stmt_check_ip = mysqli_prepare($con, "SELECT id FROM banned_ips WHERE ip_address = ?");
-    if ($stmt_check_ip) {
-        mysqli_stmt_bind_param($stmt_check_ip, "s", $ip_address);
-        mysqli_stmt_execute($stmt_check_ip);
-        mysqli_stmt_store_result($stmt_check_ip);
-        if (mysqli_stmt_num_rows($stmt_check_ip) > 0) {
-            $login_error_message = 'Accesso negato dal tuo indirizzo IP.';
-            $login_denied_reason = 'IP Banned';
-            $log_success = 0;
+    // --- CHECK 0: IP GIA' BANNATO ---
+    $stmt_check_ip_ban = mysqli_prepare($con, "SELECT id FROM banned_ips WHERE ip_address = ?");
+    if ($stmt_check_ip_ban) {
+        mysqli_stmt_bind_param($stmt_check_ip_ban, "s", $ip_address);
+        mysqli_stmt_execute($stmt_check_ip_ban);
+        mysqli_stmt_store_result($stmt_check_ip_ban);
+        if (mysqli_stmt_num_rows($stmt_check_ip_ban) > 0) {
+            $login_error_message = 'Accesso negato dal tuo indirizzo IP (bloccato).';
+            $login_denied_reason = 'IP Already Banned';
+            $log_success = 0; // Logga comunque il tentativo bloccato
         }
-        mysqli_stmt_close($stmt_check_ip);
+        mysqli_stmt_close($stmt_check_ip_ban);
     } else {
-        error_log("Check Banned IP Prepare Error: " . mysqli_error($con));
-        // Decide if you want to block login on DB error or just log it
-        // $login_error_message = 'Errore di sistema. Riprova più tardi.';
-        // $login_denied_reason = 'DB Error (IP Check)';
+        error_log("Check Banned IP (Existing) Prepare Error: " . mysqli_error($con));
+        // Considera se bloccare o meno in caso di errore DB
     }
 
-    // --- CHECK 2: Banned Email (Only if IP is not banned) ---
-    if (empty($login_error_message)) { // Proceed only if IP is not banned
-        $stmt_check_email = mysqli_prepare($con, "SELECT id FROM banned_emails WHERE email = ?");
-        if ($stmt_check_email) {
-            mysqli_stmt_bind_param($stmt_check_email, "s", $useremail);
-            mysqli_stmt_execute($stmt_check_email);
-            mysqli_stmt_store_result($stmt_check_email);
-            if (mysqli_stmt_num_rows($stmt_check_email) > 0) {
-                $login_error_message = 'Questo indirizzo email è stato bannato.';
-                $login_denied_reason = 'Email Banned';
+    // --- CHECK 1: TENTATIVI FALLITI PER IP (se non già bannato) ---
+    if (empty($login_error_message)) {
+        $stmt_count_ip = mysqli_prepare($con, "SELECT COUNT(*) as failed_count FROM login_attempts WHERE ip_address = ? AND success = 0 AND attempt_timestamp > ?");
+        if ($stmt_count_ip) {
+            mysqli_stmt_bind_param($stmt_count_ip, "ss", $ip_address, $time_limit_sql);
+            mysqli_stmt_execute($stmt_count_ip);
+            $result_count_ip = mysqli_stmt_get_result($stmt_count_ip);
+            $row_count_ip = mysqli_fetch_assoc($result_count_ip);
+            mysqli_stmt_close($stmt_count_ip);
+
+            if ($row_count_ip && $row_count_ip['failed_count'] >= MAX_IP_ATTEMPTS) {
+                // Troppi tentativi falliti dall'IP -> Banna l'IP
+                $stmt_ban_ip = mysqli_prepare($con, "INSERT INTO banned_ips (ip_address, reason, banned_at) VALUES (?, 'Troppi tentativi falliti', NOW()) ON DUPLICATE KEY UPDATE reason='Troppi tentativi falliti', banned_at=NOW()");
+                if ($stmt_ban_ip) {
+                    mysqli_stmt_bind_param($stmt_ban_ip, "s", $ip_address);
+                    mysqli_stmt_execute($stmt_ban_ip);
+                    mysqli_stmt_close($stmt_ban_ip);
+                    $login_error_message = 'Accesso bloccato temporaneamente per troppi tentativi falliti da questo indirizzo IP.';
+                    $login_denied_reason = 'IP Banned (Too Many Attempts)';
+                    $log_success = 0;
+                } else {
+                    error_log("Ban IP Prepare Error: " . mysqli_error($con));
+                }
+            }
+        } else {
+            error_log("Count IP Attempts Prepare Error: " . mysqli_error($con));
+        }
+    }
+
+    // --- CHECK 2: EMAIL GIA' BANNATA (se IP non bannato) ---
+    if (empty($login_error_message)) {
+        $stmt_check_email_ban = mysqli_prepare($con, "SELECT id FROM banned_emails WHERE email = ?");
+        if ($stmt_check_email_ban) {
+            mysqli_stmt_bind_param($stmt_check_email_ban, "s", $useremail);
+            mysqli_stmt_execute($stmt_check_email_ban);
+            mysqli_stmt_store_result($stmt_check_email_ban);
+            if (mysqli_stmt_num_rows($stmt_check_email_ban) > 0) {
+                $login_error_message = 'Questo indirizzo email è stato bloccato.';
+                $login_denied_reason = 'Email Already Banned';
                 $log_success = 0;
             }
-            mysqli_stmt_close($stmt_check_email);
+            mysqli_stmt_close($stmt_check_email_ban);
         } else {
-            error_log("Check Banned Email Prepare Error: " . mysqli_error($con));
-            // $login_error_message = 'Errore di sistema. Riprova più tardi.';
-            // $login_denied_reason = 'DB Error (Email Check)';
+            error_log("Check Banned Email (Existing) Prepare Error: " . mysqli_error($con));
         }
     }
 
@@ -77,13 +108,14 @@ if(isset($_POST['login']))
                     $log_success = 1;
 
                     // --- LOG SUCCESSFUL ATTEMPT ---
+                    // (Codice log successo invariato)
                     $stmt_log = mysqli_prepare($con, "INSERT INTO login_attempts (user_id, email_attempted, ip_address, attempt_timestamp, success) VALUES (?, ?, ?, ?, ?)");
                     if ($stmt_log) {
                         mysqli_stmt_bind_param($stmt_log, "isssi", $log_user_id, $useremail, $ip_address, $attempt_timestamp, $log_success);
                         mysqli_stmt_execute($stmt_log);
                         mysqli_stmt_close($stmt_log);
                     } else {
-                        error_log("Login Log Prepare Error (Success): " . mysqli_error($con)); // Log DB error
+                        error_log("Login Log Prepare Error (Success): " . mysqli_error($con));
                     }
                     // --- END LOG ---
 
@@ -94,24 +126,81 @@ if(isset($_POST['login']))
                     exit(); // Add exit after redirect
 
                 } else {
-                    // Account is not active
+                    // Account is not active (manualmente o per blocco precedente)
                     $log_user_id = $user_data['id']; // Log the user ID
                     $log_success = 0;
-                    $login_error_message = 'Il tuo account non è attivo. Contatta l\'amministrazione.';
-                    $login_denied_reason = 'Account Inactive';
+                    $login_error_message = 'Il tuo account non è attivo o è stato bloccato. Contatta l\'amministrazione.';
+                    $login_denied_reason = 'Account Inactive/Locked';
                 }
 
             }
-            else
+            else // Email trovata ma password errata OPPURE Email non trovata
             {
-                // Invalid email or password
                 $log_success = 0;
-                // If email was found, we can log the user_id even on failure
-                if ($user_data) {
+                if ($user_data) { // Email trovata, password errata
                     $log_user_id = $user_data['id'];
+                    $login_denied_reason = 'Invalid Credentials (Wrong Password)';
+
+                    // --- CHECK 3: TENTATIVI FALLITI PER PASSWORD ---
+                    $stmt_count_pass = mysqli_prepare($con, "SELECT COUNT(*) as failed_count FROM login_attempts WHERE user_id = ? AND success = 0 AND attempt_timestamp > ?");
+                    if ($stmt_count_pass) {
+                        mysqli_stmt_bind_param($stmt_count_pass, "is", $log_user_id, $time_limit_sql);
+                        mysqli_stmt_execute($stmt_count_pass);
+                        $result_count_pass = mysqli_stmt_get_result($stmt_count_pass);
+                        $row_count_pass = mysqli_fetch_assoc($result_count_pass);
+                        mysqli_stmt_close($stmt_count_pass);
+
+                        // Nota: il conteggio include il tentativo fallito CORRENTE che verrà loggato dopo
+                        if ($row_count_pass && ($row_count_pass['failed_count'] + 1) >= MAX_PASSWORD_ATTEMPTS) {
+                            // Troppi tentativi falliti per questa email -> Banna email e disabilita account
+                            $commit_ban = true;
+
+                            // Banna Email
+                            $stmt_ban_email = mysqli_prepare($con, "INSERT INTO banned_emails (email, reason, banned_at) VALUES (?, 'Troppi tentativi password falliti', NOW()) ON DUPLICATE KEY UPDATE reason='Troppi tentativi password falliti', banned_at=NOW()");
+                            if ($stmt_ban_email) {
+                                mysqli_stmt_bind_param($stmt_ban_email, "s", $useremail);
+                                if (!mysqli_stmt_execute($stmt_ban_email)) {
+                                    $commit_ban = false;
+                                    error_log("Ban Email Prepare Error: " . mysqli_stmt_error($stmt_ban_email));
+                                }
+                                mysqli_stmt_close($stmt_ban_email);
+                            } else {
+                                 $commit_ban = false;
+                                 error_log("Ban Email Prepare Error: " . mysqli_error($con));
+                            }
+
+                            // Disabilita Account
+                            if ($commit_ban) {
+                                $stmt_disable = mysqli_prepare($con, "UPDATE users SET is_active = 0 WHERE id = ?");
+                                if ($stmt_disable) {
+                                    mysqli_stmt_bind_param($stmt_disable, "i", $log_user_id);
+                                    if (!mysqli_stmt_execute($stmt_disable)) {
+                                        // Non consideriamo questo un errore fatale per il messaggio, ma logghiamo
+                                        error_log("Disable User Account Error: " . mysqli_stmt_error($stmt_disable));
+                                    }
+                                    mysqli_stmt_close($stmt_disable);
+                                } else {
+                                     error_log("Disable User Account Prepare Error: " . mysqli_error($con));
+                                }
+                            }
+
+                            $login_error_message = 'Account bloccato per troppi tentativi di password errati. Contatta l\'amministrazione.';
+                            $login_denied_reason = 'Email Banned & Account Disabled (Too Many Attempts)';
+
+                        } else {
+                            // Meno di N tentativi falliti, errore standard
+                            $login_error_message = 'Email o password sbagliate';
+                        }
+                    } else {
+                         error_log("Count Password Attempts Prepare Error: " . mysqli_error($con));
+                         $login_error_message = 'Email o password sbagliate'; // Errore standard in caso di fallimento query conteggio
+                    }
+
+                } else { // Email non trovata
+                    $login_error_message = 'Email o password sbagliate';
+                    $login_denied_reason = 'Invalid Credentials (Email Not Found)';
+                    $log_user_id = null;
                 }
-                $login_error_message = 'Email o password sbagliate'; // Set specific error message
-                $login_denied_reason = 'Invalid Credentials';
             }
 
         } else {
@@ -125,9 +214,9 @@ if(isset($_POST['login']))
     } // End if (empty($login_error_message)) for initial checks
 
     // --- LOG FAILED ATTEMPT (Consolidated) ---
-    // Log any failure that occurred (IP ban, Email ban, Inactive, Invalid Creds, DB error)
+    // Logga SEMPRE il tentativo fallito, indipendentemente dal motivo del blocco
     if ($log_success == 0) {
-        // You could potentially add $login_denied_reason to the log table if you modify it
+        // Aggiungi qui $login_denied_reason se modifichi la tabella login_attempts
         $stmt_log = mysqli_prepare($con, "INSERT INTO login_attempts (user_id, email_attempted, ip_address, attempt_timestamp, success) VALUES (?, ?, ?, ?, ?)");
          if ($stmt_log) {
             mysqli_stmt_bind_param($stmt_log, "isssi", $log_user_id, $useremail, $ip_address, $attempt_timestamp, $log_success);
@@ -146,6 +235,7 @@ if(isset($_POST['login']))
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <!-- ... (head invariato) ... -->
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -226,7 +316,8 @@ if(isset($_POST['login']))
 
         <!-- Script per il Timeout del Form (invariato) -->
         <script>
-            // Imposta il timeout in millisecondi (30 secondi)
+            // ... (script timeout invariato) ...
+             // Imposta il timeout in millisecondi (30 secondi)
             const timeoutDuration = 30000;
             let timeoutId; // Variabile per memorizzare l'ID del timeout
 
@@ -265,3 +356,4 @@ if(isset($_POST['login']))
         </script>
     </body>
 </html>
+
