@@ -24,6 +24,11 @@
                                 Gestisci Admin
                             </a>
 
+                            <a class="nav-link" href="gestisci-soci.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Gestisci Soci
+                            </a>
+
                             <a class="nav-link" href="gestisci_ban.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-user-slash"></i></div>
                                 Gestisci Utenti Bannati
@@ -39,10 +44,17 @@
                                 Gestisci Manifestazioni
                             </a>
 
+                            <a class="nav-link" href="gestisci-auto.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
+                                Gestisci Auto
+                            </a>
+
                             <a class="nav-link" href="iscrizioni-manifestazioni-users.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
                                 Gestisci Iscrizioni
                             </a>
+
+
                             <a class="nav-link" href="logout.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
                                 Logout

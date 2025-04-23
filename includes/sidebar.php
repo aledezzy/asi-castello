@@ -14,6 +14,11 @@
                                 Profilo
                             </a>
 
+                            <a class="nav-link" href="diventa-socio.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Diventa socio
+                            </a>
+
                             <a class="nav-link" href="change-password.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
                                 Cambia Password
@@ -28,6 +33,13 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
                                 Iscrizioni
                             </a>
+
+                            <a class="nav-link" href="gestisci-auto.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-car"></i></div>
+                                Gestisci Auto
+                            </a>
+
+
                             
 
                             <a class="nav-link" href="logout.php">

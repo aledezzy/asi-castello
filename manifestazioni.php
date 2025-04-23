@@ -50,7 +50,7 @@ if (empty($email_utente)) {
 
 // --- Recupero Auto del Socio (se applicabile) ---
 $auto_socio = [];
-if ($id_socio_utente !== null) {
+if ($id_socio_utente !== null) { // Recupera le auto SOLO se l'utente è un socio
     $stmt_auto = mysqli_prepare($con, "SELECT id, marca, modello, targa FROM auto WHERE id_socio = ? ORDER BY marca, modello");
     if ($stmt_auto) {
         mysqli_stmt_bind_param($stmt_auto, "i", $id_socio_utente);
@@ -78,7 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
     $car_modello = trim($_POST['car_modello'] ?? '');
     $car_targa = trim(strtoupper($_POST['car_targa'] ?? ''));
     $note_iscrizione = trim($_POST['note_iscrizione'] ?? '');
-    $id_auto_socio_selezionata = filter_input(INPUT_POST, 'id_auto_socio', FILTER_VALIDATE_INT);
+    // Recupera l'ID auto selezionato SOLO se l'utente è socio
+    $id_auto_socio_selezionata = ($id_socio_utente !== null) ? filter_input(INPUT_POST, 'id_auto_socio', FILTER_VALIDATE_INT) : null;
 
     // Validazione di base
     if (!$id_manifestazione_selezionata) $errore_campi['generale'] = "Manifestazione non valida.";
@@ -86,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
     if (empty($car_marca)) $errore_campi['car_marca'] = "Marca auto obbligatoria.";
     if (empty($car_modello)) $errore_campi['car_modello'] = "Modello auto obbligatorio.";
     if (empty($car_targa)) $errore_campi['car_targa'] = "Targa auto obbligatoria.";
+    // Aggiungi qui validazione per auto d'epoca se necessario (es. anno immatricolazione)
 
     if (empty($errore_campi)) {
         if (!$is_user_active) {
@@ -93,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
             $messaggio_tipo = 'danger';
         } else {
             // 1. Verifica se la manifestazione esiste e se le iscrizioni sono aperte
-            $stmt_check_manif = mysqli_prepare($con, "SELECT data_chiusura_iscrizioni, titolo FROM manifestazioni WHERE id = ?"); // Prendi anche il titolo
+            $stmt_check_manif = mysqli_prepare($con, "SELECT data_chiusura_iscrizioni, titolo FROM manifestazioni WHERE id = ?");
             if (!$stmt_check_manif) {
                  $messaggio = "Errore preparazione query verifica manifestazione: " . mysqli_error($con);
                  $messaggio_tipo = 'danger';
@@ -105,14 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
 
                 if (mysqli_num_rows($result_check_manif) > 0) {
                     $manifestazione = mysqli_fetch_assoc($result_check_manif);
-                    $titolo_manifestazione = $manifestazione['titolo']; // Salva il titolo
+                    $titolo_manifestazione = $manifestazione['titolo'];
                     mysqli_stmt_close($stmt_check_manif);
 
                     $data_chiusura = new DateTime($manifestazione['data_chiusura_iscrizioni']);
                     $ora_attuale = new DateTime();
 
                     if ($ora_attuale <= $data_chiusura) {
-                        // 2. Verifica se l'utente ha già un'iscrizione CONFERMATA o PENDENTE per questa manifestazione
+                        // 2. Verifica se l'utente ha già un'iscrizione CONFERMATA o PENDENTE
                         $stmt_gia_iscritto = mysqli_prepare($con, "SELECT id, otp_confirmed FROM iscrizioni_manifestazioni WHERE id_user = ? AND id_manifestazione = ?");
                         if (!$stmt_gia_iscritto) {
                             $messaggio = "Errore preparazione query 'già iscritto': " . mysqli_error($con);
@@ -130,31 +132,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                     $messaggio = "Sei già iscritto e confermato a questa manifestazione.";
                                     $messaggio_tipo = 'warning';
                                 } else {
-                                    // Iscrizione pendente, forse re-inviare OTP o reindirizzare alla conferma?
-                                    // Per ora, reindirizziamo alla pagina di conferma esistente
                                     $id_iscrizione_pendente = $iscrizione_esistente['id'];
                                     header("Location: conferma_iscrizione.php?iscrizione_id=" . $id_iscrizione_pendente . "&pending=1");
                                     exit;
                                 }
                             } else {
-                                // Nessuna iscrizione esistente, procedi con la creazione preliminare e invio OTP
-
+                                // Nessuna iscrizione esistente, procedi
                                 try {
                                     // 3. Genera OTP e hash
                                     $otp_plain = sprintf("%06d", random_int(0, 999999));
                                     $otp_hash = password_hash($otp_plain, PASSWORD_DEFAULT);
-                                    $otp_expiry = date("Y-m-d H:i:s", time() + 900); // Scadenza tra 15 minuti
+                                    $otp_expiry = date("Y-m-d H:i:s", time() + 900);
 
-                                    // 4. Inserisci iscrizione preliminare nel DB
+                                    // 4. Inserisci iscrizione preliminare
                                     $stmt_insert = mysqli_prepare($con,
                                         "INSERT INTO iscrizioni_manifestazioni
                                         (id_manifestazione, id_user, numero_partecipanti, data_iscrizione, stato_pagamento,
                                          car_marca, car_modello, car_targa, id_auto_socio, note_iscrizione,
                                          otp_codice, otp_expires, otp_confirmed)
-                                        VALUES (?, ?, ?, NOW(), 'In attesa', ?, ?, ?, ?, ?, ?, ?, 0)" // otp_confirmed = 0
+                                        VALUES (?, ?, ?, NOW(), 'In attesa', ?, ?, ?, ?, ?, ?, ?, 0)"
                                     );
 
-                                    $id_auto_da_inserire = ($id_auto_socio_selezionata > 0) ? $id_auto_socio_selezionata : null;
+                                    // Imposta id_auto_socio a NULL se non è stato selezionato o se l'utente non è socio
+                                    $id_auto_da_inserire = ($id_auto_socio_selezionata > 0 && $id_socio_utente !== null) ? $id_auto_socio_selezionata : null;
 
                                     if (!$stmt_insert) {
                                         throw new Exception("Errore preparazione query inserimento: " . mysqli_error($con));
@@ -162,64 +162,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
 
                                     mysqli_stmt_bind_param(
                                         $stmt_insert,
-                                        "iiisssisss", // Aggiunti 'sss' per otp_hash, otp_expiry
+                                        "iiisssisss",
                                         $id_manifestazione_selezionata,
                                         $id_utente_loggato,
                                         $numero_partecipanti,
                                         $car_marca,
                                         $car_modello,
                                         $car_targa,
-                                        $id_auto_da_inserire,
+                                        $id_auto_da_inserire, // Può essere NULL
                                         $note_iscrizione,
-                                        $otp_hash, // Salva l'hash
+                                        $otp_hash,
                                         $otp_expiry
                                     );
 
                                     if (mysqli_stmt_execute($stmt_insert)) {
-                                        $id_nuova_iscrizione = mysqli_insert_id($con); // Ottieni l'ID della nuova iscrizione
+                                        $id_nuova_iscrizione = mysqli_insert_id($con);
                                         mysqli_stmt_close($stmt_insert);
 
                                         // 5. Invia l'email con l'OTP
                                         $mail = new PHPMailer(true);
                                         try {
-                                            // Impostazioni Server (COPIA DA password-recovery.php e ADATTA)
+                                            // ... (configurazione PHPMailer invariata) ...
                                             $mail->isSMTP();
-                                            $mail->Host = 'smtp.gmail.com'; // O il tuo host SMTP
+                                            $mail->Host = 'smtp.gmail.com';
                                             $mail->SMTPAuth = true;
-                                            // --- USA LE TUE CREDENZIALI REALI QUI ---
-                                            $mail->Username = 'dezuani.fotovoltaico@gmail.com'; // Sostituisci
-                                            $mail->Password = 'ymzf ceed cgvr tpga'; // Sostituisci (Usa App Password se hai 2FA)
-                                            // --- ----------------------------- ---
+                                            $mail->Username = 'dezuani.fotovoltaico@gmail.com';
+                                            $mail->Password = 'ymzf ceed cgvr tpga';
                                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                                             $mail->Port = 587;
                                             $mail->CharSet = 'UTF-8';
-
-                                            // Mittente e Destinatario
-                                            // --- USA IL TUO INDIRIZZO E NOME QUI ---
-                                            $mail->setFrom('dezuani.fotovoltaico@gmail.com', 'Asi-Castello'); // Sostituisci
-                                            // --- ----------------------------- ---
+                                            $mail->setFrom('dezuani.fotovoltaico@gmail.com', 'Asi-Castello');
                                             $mail->addAddress($email_utente, $nome_utente);
-
-                                            // Contenuto
                                             $mail->isHTML(true);
                                             $mail->Subject = 'Conferma Iscrizione Manifestazione: ' . htmlspecialchars($titolo_manifestazione);
-
+                                            $confirmLinkBase = "http://localhost/asi-castello/";
+                                            $confirmLink = $confirmLinkBase . "conferma_iscrizione.php?iscrizione_id=" . $id_nuova_iscrizione;
+                                            // ... (corpo email invariato, usa $otp_plain e $confirmLink) ...
                                             $bodyContent = "Gentile " . htmlspecialchars($nome_utente) . ",<br><br>";
                                             $bodyContent .= "Grazie per esserti pre-iscritto alla manifestazione: <strong>" . htmlspecialchars($titolo_manifestazione) . "</strong>.<br>";
                                             $bodyContent .= "Per confermare la tua iscrizione, inserisci il seguente codice OTP nella pagina di conferma:<br><br>";
-                                            $bodyContent .= "<strong style='font-size: 1.5em; letter-spacing: 2px;'>" . $otp_plain . "</strong><br><br>"; // Mostra l'OTP in chiaro
+                                            $bodyContent .= "<strong style='font-size: 1.5em; letter-spacing: 2px;'>" . $otp_plain . "</strong><br><br>";
                                             $bodyContent .= "Questo codice scadrà tra 15 minuti.<br><br>";
                                             $bodyContent .= "Puoi confermare la tua iscrizione qui: ";
-                                            // --- MODIFICA QUESTO URL BASE ---
-                                            $confirmLinkBase = "http://localhost/asi-castello/"; // Cambia con il tuo URL reale!
-                                            // --- ------------------------ ---
-                                            $confirmLink = $confirmLinkBase . "conferma_iscrizione.php?iscrizione_id=" . $id_nuova_iscrizione;
                                             $bodyContent .= '<a href="' . $confirmLink . '">' . $confirmLink . '</a><br><br>';
                                             $bodyContent .= "Se non hai richiesto tu questa iscrizione, ignora questa email.<br><br>";
                                             $bodyContent .= "Cordiali saluti,<br>Il Team Asi-Castello";
-
                                             $mail->Body = $bodyContent;
                                             $mail->AltBody = "Gentile " . htmlspecialchars($nome_utente) . ",\n\nGrazie per esserti pre-iscritto alla manifestazione: " . htmlspecialchars($titolo_manifestazione) . ".\nPer confermare la tua iscrizione, inserisci il seguente codice OTP nella pagina di conferma: " . $otp_plain . "\nQuesto codice scadrà tra 15 minuti.\n\nPuoi confermare qui: " . $confirmLink . "\n\nSe non hai richiesto tu questa iscrizione, ignora questa email.\n\nCordiali saluti,\nIl Team Asi-Castello";
+
 
                                             $mail->send();
 
@@ -228,17 +218,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                             exit();
 
                                         } catch (Exception $e) {
-                                            // Errore invio email: logga l'errore e informa l'utente
                                             error_log("Mailer Error [Manifestazione OTP]: " . $mail->ErrorInfo);
-                                            // Potresti voler cancellare l'iscrizione pendente qui o marcarla come fallita
-                                            // mysqli_query($con, "DELETE FROM iscrizioni_manifestazioni WHERE id = $id_nuova_iscrizione");
                                             $messaggio = "Iscrizione preliminare creata, ma errore nell'invio dell'email di conferma. Contatta l'assistenza. Dettagli: {$mail->ErrorInfo}";
                                             $messaggio_tipo = 'danger';
-                                            // Non fare redirect qui, mostra il messaggio
                                         }
 
                                     } else {
-                                        // Errore nell'INSERT
                                         if (mysqli_errno($con) == 1062) {
                                              throw new Exception("Risulti già pre-iscritto o iscritto a questa manifestazione.");
                                         } else {
@@ -248,27 +233,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                     }
 
                                 } catch (Exception $e) {
-                                    // Cattura eccezioni da generazione token, DB o invio email
                                     $messaggio = "Si è verificato un errore: " . $e->getMessage();
                                     $messaggio_tipo = 'danger';
                                     error_log("Errore Iscrizione Manifestazione: " . $e->getMessage());
                                 }
-                            } // Fine 'else' per iscrizione non esistente
-                        } // Fine 'else' per query 'già iscritto' OK
+                            }
+                        }
                     } else {
                         $messaggio = "Le iscrizioni per questa manifestazione sono chiuse.";
                         $messaggio_tipo = 'warning';
                     }
                 } else {
-                     if ($stmt_check_manif) mysqli_stmt_close($stmt_check_manif); // Chiudi se aperto
+                     if ($stmt_check_manif) mysqli_stmt_close($stmt_check_manif);
                     $messaggio = "Manifestazione non trovata.";
                     $messaggio_tipo = 'danger';
                 }
-                // Non chiudere $stmt_check_manif di nuovo qui se è già stato chiuso
-            } // Fine 'else' per query check manifestazione OK
-        } // Fine 'else' per utente attivo
+            }
+        }
     } else {
-        // Se ci sono errori di validazione campi, costruisci un messaggio
         $messaggio = "Errore nel form:<ul>";
         foreach ($errore_campi as $campo => $err) {
             $messaggio .= "<li>" . htmlspecialchars($err) . "</li>";
@@ -280,7 +262,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
 
 
 // --- Recupero Manifestazioni Disponibili ---
-// (Codice invariato)
 $sql_manifestazioni = "SELECT id, titolo, data_inizio, data_chiusura_iscrizioni, programma, luogo_ritrovo, quota_pranzo, note
                        FROM manifestazioni
                        WHERE data_chiusura_iscrizioni >= NOW()
@@ -292,30 +273,29 @@ if (!$result_manifestazioni) {
 }
 
 // --- Recupero Iscrizioni CONFERMATE dell'Utente ---
-// Modifichiamo per mostrare solo quelle confermate (otp_confirmed = 1) qui
 $sql_mie_iscrizioni = "SELECT m.id, m.titolo, m.data_inizio, i.numero_partecipanti, i.car_marca, i.car_modello, i.car_targa, i.stato_pagamento
                       FROM iscrizioni_manifestazioni i
                       JOIN manifestazioni m ON i.id_manifestazione = m.id
                       WHERE i.id_user = ? AND i.otp_confirmed = 1
                       ORDER BY m.data_inizio ASC";
 $stmt_mie = mysqli_prepare($con, $sql_mie_iscrizioni);
-$mie_iscrizioni_confermate = []; // Rinomina per chiarezza
+$mie_iscrizioni_confermate = [];
 if($stmt_mie) {
     mysqli_stmt_bind_param($stmt_mie, "i", $id_utente_loggato);
     mysqli_stmt_execute($stmt_mie);
     $result_mie = mysqli_stmt_get_result($stmt_mie);
     while ($row = mysqli_fetch_assoc($result_mie)) {
-        $mie_iscrizioni_confermate[$row['id']] = $row; // Usa ID manifestazione come chiave
+        $mie_iscrizioni_confermate[$row['id']] = $row;
     }
     mysqli_stmt_close($stmt_mie);
 } else {
     $messaggio .= "<br>Errore nella preparazione query mie iscrizioni confermate: " . mysqli_error($con);
-    if($messaggio_tipo != 'danger') $messaggio_tipo = 'warning'; // Non sovrascrivere un errore più grave
+    if($messaggio_tipo != 'danger') $messaggio_tipo = 'warning';
     error_log("Errore preparazione query mie iscrizioni confermate: " . mysqli_error($con));
 }
 
 
-mysqli_close($con); // Chiudi la connessione al database alla fine dello script PHP
+mysqli_close($con);
 ?>
 
 <!DOCTYPE html>
@@ -327,8 +307,7 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
     <link href="css/styles.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     <style>
-        /* Stili aggiuntivi specifici per questa pagina, se necessario */
-        body { padding-top: 56px; /* Altezza navbar se fissa */}
+        body { padding-top: 56px; }
         .container-manifestazioni { max-width: 900px; margin: 20px auto; padding: 15px; }
         .manifestazione { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px; background-color: #f9f9f9; }
         .manifestazione h3 { margin-top: 0; color: #333; }
@@ -373,7 +352,7 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
 
                     <?php if ($messaggio): ?>
                         <div class="alert alert-<?php echo $messaggio_tipo; ?> alert-dismissible fade show" role="alert">
-                            <?php echo $messaggio; // L'HTML è già gestito nella creazione del messaggio ?>
+                            <?php echo $messaggio; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     <?php endif; ?>
@@ -400,15 +379,12 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
                                     <?php endif; ?>
 
                                     <?php
-                                    // Controlla se l'utente ha un'iscrizione CONFERMATA per QUESTA manifestazione
                                     $gia_iscritto_confermato = isset($mie_iscrizioni_confermate[$id_manifestazione_corrente]);
                                     ?>
 
                                     <?php if ($gia_iscritto_confermato): ?>
                                         <p class="gia-iscritto mt-3">Sei già iscritto a questa manifestazione.</p>
-                                        <?php
-                                            $dettagli = $mie_iscrizioni_confermate[$id_manifestazione_corrente];
-                                        ?>
+                                        <?php $dettagli = $mie_iscrizioni_confermate[$id_manifestazione_corrente]; ?>
                                         <div class="dettagli-iscrizione">
                                             <span>Partecipanti: <?php echo htmlspecialchars($dettagli['numero_partecipanti']); ?></span>
                                             <span>Auto: <?php echo htmlspecialchars($dettagli['car_marca'] . ' ' . $dettagli['car_modello'] . ' (' . $dettagli['car_targa'] . ')'); ?></span>
@@ -425,7 +401,8 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
                                                 <input type="number" class="form-control" id="numero_partecipanti_<?php echo $id_manifestazione_corrente; ?>" name="numero_partecipanti" value="<?php echo isset($_POST['numero_partecipanti']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['numero_partecipanti']) : '1'; ?>" min="1" required>
                                             </div>
 
-                                            <?php if (!empty($auto_socio)): ?>
+                                            <?php // Mostra il dropdown auto SOLO se l'utente è socio ?>
+                                            <?php if ($id_socio_utente !== null && !empty($auto_socio)): ?>
                                                 <div class="mb-3 auto-socio-select">
                                                     <label for="id_auto_socio_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Seleziona un'auto registrata (opzionale):</label>
                                                     <select class="form-select" id="id_auto_socio_<?php echo $id_manifestazione_corrente; ?>" name="id_auto_socio" onchange="compilaDatiAuto(this, <?php echo $id_manifestazione_corrente; ?>)">
@@ -441,23 +418,33 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>
+                                            <?php elseif ($id_socio_utente === null): ?>
+                                                <p class="text-muted small">Come non socio, inserisci i dati della tua auto d'epoca qui sotto.</p>
                                             <?php endif; ?>
 
+                                            <?php // Campi manuali auto sempre visibili ?>
                                             <div id="dati-auto-manuali-<?php echo $id_manifestazione_corrente; ?>">
                                                 <div class="mb-3 <?php echo isset($errore_campi['car_marca']) ? 'campo-errore' : ''; ?>">
-                                                    <label for="car_marca_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Marca Auto:</label>
+                                                    <label for="car_marca_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Marca Auto <span class="text-danger">*</span>:</label>
                                                     <input type="text" class="form-control" id="car_marca_<?php echo $id_manifestazione_corrente; ?>" name="car_marca" value="<?php echo isset($_POST['car_marca']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_marca']) : ''; ?>" required>
                                                 </div>
 
                                                 <div class="mb-3 <?php echo isset($errore_campi['car_modello']) ? 'campo-errore' : ''; ?>">
-                                                    <label for="car_modello_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Modello Auto:</label>
+                                                    <label for="car_modello_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Modello Auto <span class="text-danger">*</span>:</label>
                                                     <input type="text" class="form-control" id="car_modello_<?php echo $id_manifestazione_corrente; ?>" name="car_modello" value="<?php echo isset($_POST['car_modello']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_modello']) : ''; ?>" required>
                                                 </div>
 
                                                 <div class="mb-3 <?php echo isset($errore_campi['car_targa']) ? 'campo-errore' : ''; ?>">
-                                                    <label for="car_targa_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Targa Auto:</label>
+                                                    <label for="car_targa_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Targa Auto <span class="text-danger">*</span>:</label>
                                                     <input type="text" class="form-control" id="car_targa_<?php echo $id_manifestazione_corrente; ?>" name="car_targa" value="<?php echo isset($_POST['car_targa']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_targa']) : ''; ?>" required>
                                                 </div>
+                                                <?php // Aggiungi qui campo Anno Immatricolazione se vuoi validare auto d'epoca ?>
+                                                <!--
+                                                <div class="mb-3 <?php // echo isset($errore_campi['car_anno']) ? 'campo-errore' : ''; ?>">
+                                                    <label for="car_anno_<?php // echo $id_manifestazione_corrente; ?>" class="form-label">Anno Immatricolazione <span class="text-danger">*</span>:</label>
+                                                    <input type="number" class="form-control" id="car_anno_<?php // echo $id_manifestazione_corrente; ?>" name="car_anno" value="<?php // echo isset($_POST['car_anno']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_anno']) : ''; ?>" required min="1900" max="<?php // echo date('Y')-20; // Esempio: almeno 20 anni ?>">
+                                                </div>
+                                                -->
                                             </div>
 
                                             <div class="mb-3">
@@ -477,6 +464,7 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
                     <?php endif; ?>
 
 
+                    <?php // Sezione "Le Tue Iscrizioni Confermate" (invariata) ?>
                     <?php if (!empty($mie_iscrizioni_confermate)): ?>
                         <div class="mie-iscrizioni">
                             <h2>Le Tue Iscrizioni Confermate</h2>
@@ -517,6 +505,12 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
                 modelloInput.value = selectedOption.getAttribute('data-modello') || '';
                 targaInput.value = selectedOption.getAttribute('data-targa') || '';
             }
+            // Se si deseleziona, si potrebbero svuotare i campi manuali, ma forse è meglio lasciarli
+            // else {
+            //     marcaInput.value = '';
+            //     modelloInput.value = '';
+            //     targaInput.value = '';
+            // }
         }
         // Listener DOMContentLoaded (invariato)
         document.addEventListener('DOMContentLoaded', function() {

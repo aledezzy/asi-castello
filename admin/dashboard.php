@@ -153,6 +153,28 @@ $last30daysregusers=mysqli_num_rows($query3);
                             </div>
 
 
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Gestisci auto </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="gestisci-auto.php">Visualizza Dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Gestione Soci</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="gestisci-soci.php">Gestisci Utenti</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </main>

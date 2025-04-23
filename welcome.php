@@ -48,7 +48,7 @@ while($result=mysqli_fetch_array($query))
 
                                 
                             </div>
-                            </div>
+                        
 <?php } ?>
 
 
@@ -63,7 +63,7 @@ while($result=mysqli_fetch_array($query))
                                 </div>
                             </div>
                             <div class="col-xl-5 col-md-6" >
-                                <div class="card bg-primary text-white mb-4">
+                                <div class="card bg-warning text-white mb-4">
                                     <div class="card-body">Visualizza le tue iscrizioni</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="iscrizioni.php">Visualizza Iscrizioni</a>
@@ -72,12 +72,30 @@ while($result=mysqli_fetch_array($query))
                                 </div>
                             </div>
                     
+                            <div class="col-xl-5 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Gestione Auto</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="gestisci-auto.php">Visualizza dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <div class="col-xl-5 col-md-6" >
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Diventa socio</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="diventa-socio.php">Visualizza dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
               
                         </div>
-                   
+                        </div>
                     </div>
                 </main>
           <?php include('includes/footer.php');?>
