@@ -1,61 +1,102 @@
 <?php session_start();
-require_once('includes/config.php');
+require_once('includes/config.php'); // Assicurati che config.php definisca le costanti RECAPTCHA
 
 //Code for Registration
 if(isset($_POST['submit']))
 {
-    $fname=$_POST['fname'];
-    $lname=$_POST['lname'];
-    $email=$_POST['email'];
-    $password=$_POST['password'];
-    $contact=$_POST['contact'];
+    // --- INIZIO VERIFICA reCAPTCHA ---
+    $recaptcha_response = $_POST['g-recaptcha-response'] ?? null;
+    $recaptcha_valid = false;
+    $error_message = ''; // Variabile per messaggi di errore specifici del captcha
 
-    // --- Check if email already exists using prepared statement ---
-    $stmt_check = mysqli_prepare($con, "SELECT id FROM users WHERE email=?");
-    if ($stmt_check) {
-        mysqli_stmt_bind_param($stmt_check, "s", $email);
-        mysqli_stmt_execute($stmt_check);
-        mysqli_stmt_store_result($stmt_check); // Store result to check num_rows
-        $row_count = mysqli_stmt_num_rows($stmt_check);
-        mysqli_stmt_close($stmt_check); // Close the statement
+    if ($recaptcha_response) {
+        $recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+        $recaptcha_data = [
+            'secret'   => RECAPTCHA_SECRET_KEY, // Usa la costante da config.php
+            'response' => $recaptcha_response,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] // Opzionale ma consigliato
+        ];
 
-        if($row_count > 0)
-        {
-            echo "<script>alert('Email già in uso, riprova con un'altra mail o fai il login');</script>";
+        // Usa cURL per la richiesta POST
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($recaptcha_data),
+            ],
+        ];
+        $context  = stream_context_create($options);
+        $verify_response = file_get_contents($recaptcha_url, false, $context);
+        $response_data = json_decode($verify_response);
+
+        if ($response_data && $response_data->success) {
+            $recaptcha_valid = true;
         } else {
-            // --- Hash the password ---
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Use default strong hashing algorithm
-
-            // --- Insert new user using prepared statement ---
-            $stmt_insert = mysqli_prepare($con, "INSERT INTO users(fname, lname, email, password, contactno) VALUES (?, ?, ?, ?, ?)");
-            if ($stmt_insert) {
-                mysqli_stmt_bind_param($stmt_insert, "sssss", $fname, $lname, $email, $hashed_password, $contact);
-                $success = mysqli_stmt_execute($stmt_insert);
-                mysqli_stmt_close($stmt_insert); // Close the statement
-
-                if($success)
-                {
-                    echo "<script>alert('Registrazione avvenuta con successo');</script>";
-                    // Redirect using PHP header is generally preferred over JS for this
-                    header("Location: login.php");
-                    exit(); // Important: stop script execution after redirect
-                    // echo "<script type='text/javascript'> document.location = 'login.php'; </script>";
-                } else {
-                     // Provide a more generic error for the user
-                     echo "<script>alert('Errore durante la registrazione. Riprova.');</script>";
-                     // Log the detailed error for debugging (optional)
-                     // error_log("Signup Error: " . mysqli_error($con));
-                }
-            } else {
-                 echo "<script>alert('Errore nella preparazione della query di inserimento. Riprova più tardi.');</script>";
-                 // Log the error (optional)
-                 // error_log("Signup Prepare Insert Error: " . mysqli_error($con));
+            // Logga l'errore reCAPTCHA per debug, se presente
+            if (isset($response_data->{'error-codes'})) {
+                error_log("reCAPTCHA verification failed (Signup): " . implode(', ', $response_data->{'error-codes'}));
             }
+            $error_message = "Verifica CAPTCHA fallita. Riprova.";
         }
     } else {
-        echo "<script>alert('Errore nella preparazione della query di controllo. Riprova più tardi.');</script>";
-        // Log the error (optional)
-        // error_log("Signup Prepare Check Error: " . mysqli_error($con));
+        $error_message = "Per favore, completa la verifica CAPTCHA.";
+    }
+    // --- FINE VERIFICA reCAPTCHA ---
+
+    // Procedi solo se il CAPTCHA è valido
+    if ($recaptcha_valid) {
+        $fname=$_POST['fname'];
+        $lname=$_POST['lname'];
+        $email=$_POST['email'];
+        $password=$_POST['password'];
+        $contact=$_POST['contact'];
+
+        // --- Check if email already exists using prepared statement ---
+        $stmt_check = mysqli_prepare($con, "SELECT id FROM users WHERE email=?");
+        if ($stmt_check) {
+            mysqli_stmt_bind_param($stmt_check, "s", $email);
+            mysqli_stmt_execute($stmt_check);
+            mysqli_stmt_store_result($stmt_check); // Store result to check num_rows
+            $row_count = mysqli_stmt_num_rows($stmt_check);
+            mysqli_stmt_close($stmt_check); // Close the statement
+
+            if($row_count > 0)
+            {
+                echo "<script>alert('Email già in uso, riprova con un'altra mail o fai il login');</script>";
+            } else {
+                // --- Hash the password ---
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT); // Use default strong hashing algorithm
+
+                // --- Insert new user using prepared statement ---
+                $stmt_insert = mysqli_prepare($con, "INSERT INTO users(fname, lname, email, password, contactno) VALUES (?, ?, ?, ?, ?)");
+                if ($stmt_insert) {
+                    mysqli_stmt_bind_param($stmt_insert, "sssss", $fname, $lname, $email, $hashed_password, $contact);
+                    $success = mysqli_stmt_execute($stmt_insert);
+                    mysqli_stmt_close($stmt_insert); // Close the statement
+
+                    if($success)
+                    {
+                        echo "<script>alert('Registrazione avvenuta con successo');</script>";
+                        header("Location: login.php");
+                        exit();
+                    } else {
+                         echo "<script>alert('Errore durante la registrazione. Riprova.');</script>";
+                         // error_log("Signup Error: " . mysqli_error($con));
+                    }
+                } else {
+                     echo "<script>alert('Errore nella preparazione della query di inserimento. Riprova più tardi.');</script>";
+                     // error_log("Signup Prepare Insert Error: " . mysqli_error($con));
+                }
+            }
+        } else {
+            echo "<script>alert('Errore nella preparazione della query di controllo. Riprova più tardi.');</script>";
+            // error_log("Signup Prepare Check Error: " . mysqli_error($con));
+        }
+    } else {
+        // Se il captcha non è valido, mostra il messaggio di errore specifico del captcha
+        if (!empty($error_message)) {
+            echo "<script>alert('".addslashes($error_message)."');</script>";
+        }
     }
 }
 ?>
@@ -70,17 +111,17 @@ if(isset($_POST['submit']))
         <title>User Signup | Sistema di Registrazione e Login</title>
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+        <!-- Script API reCAPTCHA -->
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script type="text/javascript">
             function checkpass()
             {
-                // Basic client-side check (server-side validation is still essential)
                 if(document.signup.password.value != document.signup.confirmpassword.value)
                 {
                     alert('Password and Confirm Password field does not match');
                     document.signup.confirmpassword.focus();
                     return false;
                 }
-                // You might add checks for the pattern here too, but server-side is more reliable
                 return true;
             }
         </script>
@@ -104,26 +145,26 @@ if(isset($_POST['submit']))
                                             <div class="row mb-3">
                                                 <div class="col-md-6">
                                                     <div class="form-floating mb-3 mb-md-0">
-                                                        <input class="form-control" id="fname" name="fname" type="text" placeholder="Inserisci il tuo nome" required />
+                                                        <input class="form-control" id="fname" name="fname" type="text" placeholder="Inserisci il tuo nome" value="<?php echo htmlspecialchars($_POST['fname'] ?? ''); ?>" required />
                                                         <label for="inputFirstName">Nome</label>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-floating">
-                                                        <input class="form-control" id="lname" name="lname" type="text" placeholder="Inserisci il tuo cognome" required />
+                                                        <input class="form-control" id="lname" name="lname" type="text" placeholder="Inserisci il tuo cognome" value="<?php echo htmlspecialchars($_POST['lname'] ?? ''); ?>" required />
                                                         <label for="inputLastName">Cognome</label>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="email" name="email" type="email" placeholder="Inserisci la tua email" required />
+                                                <input class="form-control" id="email" name="email" type="email" placeholder="Inserisci la tua email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required />
                                                 <label for="inputEmail">Indirizzo email</label>
                                             </div>
 
                                             <div class="form-floating mb-3">
-                                                <input class="form-control" id="contact" name="contact" type="text" placeholder="Inserisci il tuo numero di contatto" required pattern="[0-9]{10}" title="10 caratteri numerici solo" maxlength="10" />
+                                                <input class="form-control" id="contact" name="contact" type="text" placeholder="Inserisci il tuo numero di contatto" value="<?php echo htmlspecialchars($_POST['contact'] ?? ''); ?>" required pattern="[0-9]{10}" title="10 caratteri numerici solo" maxlength="10" />
                                                 <label for="inputcontact">Numero di contatto</label>
                                             </div>
 
@@ -141,6 +182,11 @@ if(isset($_POST['submit']))
                                                         <label for="inputPasswordConfirm">Conferma Password</label>
                                                     </div>
                                                 </div>
+                                            </div>
+
+                                            <!-- Widget reCAPTCHA -->
+                                            <div class="mb-3 d-flex justify-content-center">
+                                                <div class="g-recaptcha" data-sitekey="<?php echo RECAPTCHA_SITE_KEY; // Usa la costante da config.php ?>"></div>
                                             </div>
 
                                             <div class="mt-4 mb-0">
@@ -164,4 +210,3 @@ if(isset($_POST['submit']))
         <script src="js/scripts.js"></script>
     </body>
 </html>
-

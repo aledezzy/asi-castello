@@ -93,7 +93,7 @@ $last30daysregusers=mysqli_num_rows($query3);
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
 
 
 
@@ -108,6 +108,52 @@ $last30daysregusers=mysqli_num_rows($query3);
                             </div>
                    
                       
+
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Gestisci utenti bannati</div>
+                                        
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="gestisci_ban.php">Visualizza Dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Visualizza tentativi di login</div>
+                                        
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="gestisci_login.php">Visualizza Dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Gestisci iscrizioni degli utenti alle manifestazioni </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="iscrizioni-manifestazioni-users.php">Visualizza Dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-4 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body"> Gestisci manifestazioni</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="manage-manifestazioni.php">Visualizza Dettagli</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
                 </main>
              <?php include_once('../includes/footer.php'); ?>

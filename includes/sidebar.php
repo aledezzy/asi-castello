@@ -14,10 +14,21 @@
                                 Profilo
                             </a>
 
-  <a class="nav-link" href="change-password.php">
+                            <a class="nav-link" href="change-password.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
-                               Cambia Password
+                                Cambia Password
                             </a>
+
+                            <a class="nav-link" href="manifestazioni.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-calendar-alt"></i></div>
+                                Manifestazioni
+                            </a>
+
+                            <a class="nav-link" href="iscrizioni.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-list"></i></div>
+                                Iscrizioni
+                            </a>
+                            
 
                             <a class="nav-link" href="logout.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-sign-out-alt"></i></div>
