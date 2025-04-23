@@ -12,6 +12,7 @@ $messaggio = '';
 $messaggio_tipo = 'info';
 
 // --- Gestione Rimozione Manifestazione (GET) ---
+// ... (codice rimozione invariato) ...
 if (isset($_GET['del_id'])) {
     $manifestazione_id_to_delete = filter_input(INPUT_GET, 'del_id', FILTER_VALIDATE_INT);
     if ($manifestazione_id_to_delete) {
@@ -41,13 +42,20 @@ if (isset($_GET['del_id'])) {
     }
 }
 
+
 // Recupera messaggio dalla URL se presente (dopo redirect)
-if (isset($_GET['msg'])) {
+// Modifica: Controlla se il messaggio viene da invia_email_manifestazione.php
+if (isset($_GET['email_msg'])) {
+    $messaggio = $_GET['email_msg'];
+    $messaggio_tipo = $_GET['email_msg_type'] ?? 'info';
+} elseif (isset($_GET['msg'])) {
     $messaggio = $_GET['msg'];
     $messaggio_tipo = $_GET['msg_type'] ?? 'info';
 }
 
+
 // --- Recupero Tutte le Manifestazioni ---
+// ... (codice recupero manifestazioni invariato) ...
 $all_manifestazioni = [];
 $sql_all_manifestazioni = "SELECT
                                id,
@@ -74,7 +82,8 @@ if ($result_all) {
     error_log("Fetch All Manifestazioni Error: " . mysqli_error($con));
 }
 
-mysqli_close($con);
+
+mysqli_close($con); // Chiudi qui la connessione, verrà riaperta nello script di invio email
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -95,6 +104,7 @@ mysqli_close($con);
                 font-size: 0.9rem;
             }
             .table-responsive { margin-top: 1rem; }
+            .action-buttons a { margin-bottom: 5px; display: inline-block; } /* Spazio tra bottoni */
         </style>
     </head>
     <body class="sb-nav-fixed">
@@ -112,7 +122,7 @@ mysqli_close($con);
 
                         <?php if (!empty($messaggio)): ?>
                             <div class="alert alert-<?php echo htmlspecialchars($messaggio_tipo); ?> alert-dismissible fade show" role="alert">
-                                <?php echo htmlspecialchars($messaggio); ?>
+                                <?php echo htmlspecialchars(urldecode($messaggio)); // Decodifica messaggio da URL ?>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php endif; ?>
@@ -126,7 +136,7 @@ mysqli_close($con);
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="datatablesManifestazioni"> <!-- ID univoco per datatables -->
+                                    <table id="datatablesManifestazioni">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -136,7 +146,8 @@ mysqli_close($con);
                                                 <th>Luogo Ritrovo</th>
                                                 <th>Quota Pranzo (€)</th>
                                                 <th>Data Creazione</th>
-                                                <th>Azione</th>
+                                                <th>Azioni</th>
+                                                <th>Azioni Email</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
@@ -148,7 +159,8 @@ mysqli_close($con);
                                                 <th>Luogo Ritrovo</th>
                                                 <th>Quota Pranzo (€)</th>
                                                 <th>Data Creazione</th>
-                                                <th>Azione</th>
+                                                <th>Azioni</th>
+                                                <th>Azioni Email</th>
                                             </tr>
                                         </tfoot>
                                         <tbody>
@@ -162,7 +174,7 @@ mysqli_close($con);
                                                     <td><?php echo htmlspecialchars($manif['luogo_ritrovo'] ?: '-'); ?></td>
                                                     <td><?php echo htmlspecialchars(number_format($manif['quota_pranzo'] ?? 0, 2, ',', '.')); ?></td>
                                                     <td><?php echo htmlspecialchars(date("d/m/Y H:i", strtotime($manif['data_creazione']))); ?></td>
-                                                    <td>
+                                                    <td class="action-buttons"> 
                                                         <a href="edit-manifestazione.php?id=<?php echo $manif['id']; ?>"
                                                            title="Modifica Manifestazione" class="btn btn-primary btn-sm me-1">
                                                             <i class="fas fa-edit"></i>
@@ -173,10 +185,17 @@ mysqli_close($con);
                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                         </a>
                                                     </td>
+                                                    <td class="action-buttons">
+                                                        <a href="invia_email_manifestazione.php?id=<?php echo $manif['id']; ?>"
+                                                           onClick="return confirm('Sei sicuro di voler inviare l\'email per la manifestazione \"<?php echo htmlspecialchars(addslashes($manif['titolo'])); ?>\" a tutti gli utenti registrati?');"
+                                                           title="Invia Email a Tutti gli Utenti" class="btn btn-info btn-sm">
+                                                            <i class="fas fa-envelope"></i> Invia Email
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                                 <?php endforeach; ?>
                                             <?php else: ?>
-                                                <tr><td colspan="8" class="text-center">Nessuna manifestazione trovata.</td></tr>
+                                                <tr><td colspan="9" class="text-center">Nessuna manifestazione trovata.</td></tr>
                                             <?php endif; ?>
                                         </tbody>
                                     </table>
