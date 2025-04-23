@@ -97,19 +97,49 @@ Queste funzionalità aggiungono livelli di sicurezza e flessibilità all'applica
 ## Installazione 
 
 ```bash
-# Esempio:
-# 1. Clona la repository
-# git clone
-# cd club-auto-epoca
+## Requisiti
 
-# 2. Installa dipendenze backend
-# ...
+- Docker
+- Docker Compose
 
-# 3. Installa dipendenze frontend
-# ...
+## Installazione rapida
 
-# 4. Configura il database
-# ...
+1. Clona questo repository:
+```bash
+git clone https://github.com/username/nome-repository.git
+cd nome-repository
+```
 
-# 5. Avvia l'applicazione
-# ...
+2. Avvia i container:
+```bash
+docker-compose up -d
+```
+
+3. Accedi all'applicazione:
+   - Web app: http://localhost
+   - phpMyAdmin: http://localhost:8080
+     - Username: appuser
+     - Password: apppassword
+
+## Configurazione
+
+L'applicazione è preconfigurata per funzionare con Docker, non è necessaria alcuna configurazione aggiuntiva.
+
+### Credenziali Database
+
+- **Database**: loginsystem
+- **Utente**: appuser
+- **Password**: apppassword
+- **Root Password**: rootpassword
+
+## Sviluppo
+
+Per modificare i file dell'applicazione, modifica i file nella directory `app/`. I cambiamenti saranno immediatamente visibili grazie al volume configurato in Docker Compose.
+
+## Risoluzione problemi
+
+- Se incontri errori durante il primo avvio, prova a ricostruire i container:
+```bash
+docker-compose down
+docker-compose up --build -d
+```
