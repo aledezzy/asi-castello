@@ -89,18 +89,17 @@ Queste funzionalità aggiungono livelli di sicurezza e flessibilità all'applica
 
 ## Stack Tecnologico (Da definire)
 
-* **Linguaggio Backend:** (Es. PHP, Python, Java, Node.js, ...)
-* **Framework Backend:** (Es. Laravel, Django, Spring Boot, Express, ...)
-* **Database:** (Es. MySQL, PostgreSQL, MongoDB, ...)
-* **Frontend:** (Es. HTML, CSS, JavaScript, React, Vue, Angular, ...)
-* **Altro:** (Es. Servizio Email, Libreria Captcha, ...)
+* **Linguaggio Backend:**  PHP
+* **Database:** MySQL
+* **Frontend:** HTML, CSS, JavaScript, Bootstrap
+* **Altro:** Servizio Email, reCAPTCHA
 
-## Installazione (Aggiungere istruzioni qui)
+## Installazione 
 
 ```bash
 # Esempio:
 # 1. Clona la repository
-# git clone [https://github.com/tuo-utente/club-auto-epoca.git](https://github.com/tuo-utente/club-auto-epoca.git)
+# git clone
 # cd club-auto-epoca
 
 # 2. Installa dipendenze backend
