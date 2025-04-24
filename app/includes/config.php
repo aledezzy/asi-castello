@@ -1,7 +1,7 @@
 <?php
-define('DB_SERVER','127.0.0.1');
+define('DB_SERVER','db');
 define('DB_USER','root');
-define('DB_PASS' ,'');
+define('DB_PASS' ,'paolino53');
 define('DB_NAME', 'loginsystem');
 // Chiavi Google reCAPTCHA v2 Checkbox
 define('RECAPTCHA_SITE_KEY', '6Ld5eyErAAAAAN3fWiUC1f53DDe9pAnZRXvZ8bF-'); // Sostituisci con la tua Site Key
