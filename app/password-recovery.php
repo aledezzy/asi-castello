@@ -1,7 +1,7 @@
 <?php
 // Non avviare la sessione qui se non è strettamente necessario per questa pagina
 // session_start();
-include('includes/config.php');
+include 'includes/config.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -45,21 +45,20 @@ if (isset($_POST['send'])) {
                             // 4. Invia l'email con il link di reset (contenente il token NON hashato)
                             $mail = new PHPMailer(true); // Pass true per abilitare le eccezioni
                             try {
-                                // Impostazioni Server
+                                // Impostazioni Server SMTP
                                 $mail->isSMTP();
-                                $mail->Host = 'smtp.gmail.com'; // O il tuo host SMTP
+                                $mail->Host = SMTP_HOST;
                                 $mail->SMTPAuth = true;
-                                // --- USA LE TUE CREDENZIALI REALI QUI ---
-                                $mail->Username = 'dezuani.fotovoltaico@gmail.com'; // Sostituisci con il tuo username Gmail
-                                $mail->Password = 'ymzf ceed cgvr tpga'; // Sostituisci con la tua password Gmail o App Password
-                                // --- ----------------------------- ---
-                                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Usa 'tls'
-                                $mail->Port = 587;
-                                $mail->CharSet = 'UTF-8'; // Imposta la codifica
+                                $mail->Username = SMTP_USER;
+                                $mail->Password = SMTP_PASS;
+                                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                                $mail->Port = SMTP_PORT;
+                                $mail->CharSet = 'UTF-8';
+
 
                                 // Mittente e Destinatario
                                 // --- USA IL TUO INDIRIZZO E NOME QUI ---
-                                $mail->setFrom('dezuani.fotovoltaico@gmail.com', 'Asi-Castello'); // Sostituisci con il tuo nome e email
+                                $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME); // Sostituisci con il tuo nome e email
                                 // --- ----------------------------- ---
                                 $mail->addAddress($femail, $fname); // Aggiungi destinatario
 
@@ -68,7 +67,7 @@ if (isset($_POST['send'])) {
                                 $mail->Subject = 'Richiesta di Reset Password';
 
                                 // --- MODIFICA QUESTO URL BASE ---
-                                $resetLinkBase = "http://localhost/asi-castello/"; // Cambia con il tuo URL reale!
+                                $resetLinkBase = APP_BASE_URL; // Cambia con il tuo URL reale!
                                 // --- ------------------------ ---
                                 $resetLink = $resetLinkBase . "reset-password.php?token=" . urlencode($token) . "&email=" . urlencode($femail);
 
@@ -144,7 +143,7 @@ if (isset($_POST['send'])) {
                             <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header">
-                                        <h2 align="center">Sistema di Registrazione e Login</h2>
+                                        <h2>Sistema di Registrazione e Login</h2>
                                         <hr />
                                         <h3 class="text-center font-weight-light my-4">Recupero Password</h3>
                                     </div>
@@ -178,7 +177,7 @@ if (isset($_POST['send'])) {
                     </div>
                 </main>
             </div>
-       <?php include('includes/footer.php');?>
+       <?php include 'includes/footer.php';?>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>

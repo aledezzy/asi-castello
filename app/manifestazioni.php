@@ -82,11 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
     $id_auto_socio_selezionata = ($id_socio_utente !== null) ? filter_input(INPUT_POST, 'id_auto_socio', FILTER_VALIDATE_INT) : null;
 
     // Validazione di base
-    if (!$id_manifestazione_selezionata) $errore_campi['generale'] = "Manifestazione non valida.";
-    if (!$numero_partecipanti) $errore_campi['numero_partecipanti'] = "Numero partecipanti non valido (minimo 1).";
-    if (empty($car_marca)) $errore_campi['car_marca'] = "Marca auto obbligatoria.";
-    if (empty($car_modello)) $errore_campi['car_modello'] = "Modello auto obbligatorio.";
-    if (empty($car_targa)) $errore_campi['car_targa'] = "Targa auto obbligatoria.";
+    if (!$id_manifestazione_selezionata) { $errore_campi['generale'] = "Manifestazione non valida.";}
+    if (!$numero_partecipanti) { $errore_campi['numero_partecipanti'] = "Numero partecipanti non valido (minimo 1)."; }
+    if (empty($car_marca)) { $errore_campi['car_marca'] = "Marca auto obbligatoria."; }
+    if (empty($car_modello)) { $errore_campi['car_modello'] = "Modello auto obbligatorio."; }
+    if (empty($car_targa)) { $errore_campi['car_targa'] = "Targa auto obbligatoria."; }
     // Aggiungi qui validazione per auto d'epoca se necessario (es. anno immatricolazione)
 
     if (empty($errore_campi)) {
@@ -184,18 +184,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                         try {
                                             // ... (configurazione PHPMailer invariata) ...
                                             $mail->isSMTP();
-                                            $mail->Host = 'smtp.gmail.com';
+                                            $mail->Host = SMTP_HOST;
                                             $mail->SMTPAuth = true;
-                                            $mail->Username = 'dezuani.fotovoltaico@gmail.com';
-                                            $mail->Password = 'ymzf ceed cgvr tpga';
+                                            $mail->Username = SMTP_USER;
+                                            $mail->Password = SMTP_PASS;
                                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                                            $mail->Port = 587;
+                                            $mail->Port = SMTP_PORT;
                                             $mail->CharSet = 'UTF-8';
-                                            $mail->setFrom('dezuani.fotovoltaico@gmail.com', 'Asi-Castello');
+                                            $mail->setFrom('MAIL_FROM', 'MAIL_FROM_NAME');
                                             $mail->addAddress($email_utente, $nome_utente);
                                             $mail->isHTML(true);
                                             $mail->Subject = 'Conferma Iscrizione Manifestazione: ' . htmlspecialchars($titolo_manifestazione);
-                                            $confirmLinkBase = "http://localhost/asi-castello/";
+                                            $confirmLinkBase = APP_BASE_URL;
                                             $confirmLink = $confirmLinkBase . "conferma_iscrizione.php?iscrizione_id=" . $id_nuova_iscrizione;
                                             // ... (corpo email invariato, usa $otp_plain e $confirmLink) ...
                                             $bodyContent = "Gentile " . htmlspecialchars($nome_utente) . ",<br><br>";
@@ -229,7 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                         } else {
                                              throw new Exception("Errore durante la creazione dell'iscrizione preliminare: " . mysqli_stmt_error($stmt_insert));
                                         }
-                                        mysqli_stmt_close($stmt_insert);
+                                        
                                     }
 
                                 } catch (Exception $e) {
@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                         $messaggio_tipo = 'warning';
                     }
                 } else {
-                     if ($stmt_check_manif) mysqli_stmt_close($stmt_check_manif);
+                     if ($stmt_check_manif) {mysqli_stmt_close($stmt_check_manif);}
                     $messaggio = "Manifestazione non trovata.";
                     $messaggio_tipo = 'danger';
                 }
@@ -290,7 +290,7 @@ if($stmt_mie) {
     mysqli_stmt_close($stmt_mie);
 } else {
     $messaggio .= "<br>Errore nella preparazione query mie iscrizioni confermate: " . mysqli_error($con);
-    if($messaggio_tipo != 'danger') $messaggio_tipo = 'warning';
+    if($messaggio_tipo != 'danger') {$messaggio_tipo = 'warning';}
     error_log("Errore preparazione query mie iscrizioni confermate: " . mysqli_error($con));
 }
 
@@ -329,10 +329,10 @@ mysqli_close($con);
 </head>
 <body class="sb-nav-fixed">
 
-    <?php include_once('includes/navbar.php');?>
+    <?php include_once 'includes/navbar.php';?>
 
     <div id="layoutSidenav">
-        <?php include_once('includes/sidebar.php');?>
+        <?php include_once 'includes/sidebar.php';?>
 
         <div id="layoutSidenav_content">
             <main>
@@ -438,13 +438,7 @@ mysqli_close($con);
                                                     <label for="car_targa_<?php echo $id_manifestazione_corrente; ?>" class="form-label">Targa Auto <span class="text-danger">*</span>:</label>
                                                     <input type="text" class="form-control" id="car_targa_<?php echo $id_manifestazione_corrente; ?>" name="car_targa" value="<?php echo isset($_POST['car_targa']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_targa']) : ''; ?>" required>
                                                 </div>
-                                                <?php // Aggiungi qui campo Anno Immatricolazione se vuoi validare auto d'epoca ?>
-                                                <!--
-                                                <div class="mb-3 <?php // echo isset($errore_campi['car_anno']) ? 'campo-errore' : ''; ?>">
-                                                    <label for="car_anno_<?php // echo $id_manifestazione_corrente; ?>" class="form-label">Anno Immatricolazione <span class="text-danger">*</span>:</label>
-                                                    <input type="number" class="form-control" id="car_anno_<?php // echo $id_manifestazione_corrente; ?>" name="car_anno" value="<?php // echo isset($_POST['car_anno']) && ($_POST['id_manifestazione'] ?? null) == $id_manifestazione_corrente ? htmlspecialchars($_POST['car_anno']) : ''; ?>" required min="1900" max="<?php // echo date('Y')-20; // Esempio: almeno 20 anni ?>">
-                                                </div>
-                                                -->
+                                                
                                             </div>
 
                                             <div class="mb-3">
@@ -486,7 +480,7 @@ mysqli_close($con);
 
                 </div>
             </main>
-            <?php include('includes/footer.php');?>
+            <?php include 'includes/footer.php';?>
         </div>
     </div>
 

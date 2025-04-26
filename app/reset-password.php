@@ -1,5 +1,5 @@
 <?php
-include('includes/config.php');
+include 'includes/config.php';
 
 $token = $_GET['token'] ?? null;
 $email = $_GET['email'] ?? null;
@@ -136,7 +136,7 @@ if ($show_form && isset($_POST['reset_password'])) {
                             <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header">
-                                        <h2 align="center">Sistema di Registrazione e Login</h2>
+                                        <h2>Sistema di Registrazione e Login</h2>
                                         <hr />
                                         <h3 class="text-center font-weight-light my-4">Reimposta la tua Password</h3>
                                     </div>
@@ -166,8 +166,7 @@ if ($show_form && isset($_POST['reset_password'])) {
                                                 <div class="form-floating mb-3">
                                                     <input class="form-control" id="newpassword" name="newpassword" type="password" placeholder="Nuova Password" required />
                                                     <label for="newpassword">Nuova Password</label>
-                                                    <!-- Optional: Aggiungi pattern per complessità -->
-                                                    <!-- pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Almeno 6 caratteri, con maiuscole, minuscole e numeri." -->
+                                                    <input pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" title="Almeno 6 caratteri, con maiuscole, minuscole e numeri." />
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input class="form-control" id="confirmpassword" name="confirmpassword" type="password" placeholder="Conferma Nuova Password" required />
@@ -199,7 +198,7 @@ if ($show_form && isset($_POST['reset_password'])) {
                     </div>
                 </main>
             </div>
-       <?php include('includes/footer.php');?>
+       <?php include 'includes/footer.php';?>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>

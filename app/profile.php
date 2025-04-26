@@ -1,5 +1,5 @@
 <?php session_start();
-include_once('includes/config.php');
+include_once 'includes/config.php';
 
 if (strlen($_SESSION['id'] ?? 0) == 0) {
   header('location:logout.php');
@@ -21,9 +21,9 @@ if (strlen($_SESSION['id'] ?? 0) == 0) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     </head>
     <body class="sb-nav-fixed">
-      <?php include_once('includes/navbar.php');?>
+      <?php include_once 'includes/navbar.php';?>
         <div id="layoutSidenav">
-          <?php include_once('includes/sidebar.php');?>
+          <?php include_once 'includes/sidebar.php';?>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
@@ -87,7 +87,7 @@ if ($user_data) { // Controlla se i dati sono stati recuperati con successo
 
                     </div>
                 </main>
-          <?php include('includes/footer.php');?>
+          <?php include 'includes/footer.php';?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

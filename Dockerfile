@@ -1,20 +1,16 @@
-FROM php:8.2-apache
+FROM php:8.4-apache-bullseye
 
-# Update and install security updates
+# Update, install security updates, PHP extensions and enable Apache modules
 RUN apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends \
-	libpng-dev \
-	libjpeg-dev \
 	libfreetype6-dev \
+	libjpeg-dev \
+	libpng-dev \
 	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/*
-
-# Installa estensioni PHP necessarie
-RUN docker-php-ext-install mysqli pdo pdo_mysql
-
-# Abilita il modulo rewrite di Apache
-RUN a2enmod rewrite
+	&& rm -rf /var/lib/apt/lists/* \
+	&& docker-php-ext-install mysqli pdo pdo_mysql \
+	&& a2enmod rewrite
 
 # Copia i file dell'applicazione
 COPY ./app/ /var/www/html/

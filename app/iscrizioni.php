@@ -136,10 +136,10 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
 </head>
 <body class="sb-nav-fixed">
 
-    <?php include_once('includes/navbar.php');?>
+    <?php include_once 'includes/navbar.php';?>
 
     <div id="layoutSidenav">
-        <?php include_once('includes/sidebar.php');?>
+        <?php include_once 'includes/sidebar.php';?>
 
         <div id="layoutSidenav_content">
             <main>
@@ -201,7 +201,7 @@ mysqli_close($con); // Chiudi la connessione al database alla fine dello script 
 
                 </div> <!-- Fine container-fluid -->
             </main>
-            <?php include('includes/footer.php');?>
+            <?php include 'includes/footer.php';?>
         </div> <!-- Fine layoutSidenav_content -->
     </div> <!-- Fine layoutSidenav -->
 

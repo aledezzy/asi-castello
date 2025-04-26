@@ -264,7 +264,7 @@ if(isset($_POST['login']))
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
 
                                     <div class="card-header">
-                                        <h2 align="center">Login Asi</h2>
+                                        <h2>Login Asi</h2>
                                         <hr />
                                         <h3 class="text-center font-weight-light my-4">Login utente</h3>
                                     </div>
@@ -309,7 +309,7 @@ if(isset($_POST['login']))
                     </div>
                 </main>
             </div>
-            <?php include('includes/footer.php');?>
+            <?php include 'includes/footer.php';?>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
