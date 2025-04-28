@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Creato il: Apr 28, 2025 alle 09:25
+-- Creato il: Apr 28, 2025 alle 09:45
 -- Versione del server: 10.6.21-MariaDB-ubu2004
 -- Versione PHP: 8.2.8
 
@@ -182,7 +182,9 @@ INSERT INTO `login_attempts` (`id`, `user_id`, `email_attempted`, `ip_address`, 
 (7, 8, 'andreasanto.morabito@allievi.itsdigitalacademy.com', '172.18.0.1', '2025-04-26 10:34:01', 1),
 (8, 9, 'aledezuani@outlook.it', '172.18.0.1', '2025-04-26 10:53:50', 1),
 (9, 9, 'aledezuani@outlook.it', '192.168.65.1', '2025-04-28 06:39:01', 1),
-(10, 7, 'alessandrodezuani@gmail.com', '192.168.65.1', '2025-04-28 06:39:12', 1);
+(10, 7, 'alessandrodezuani@gmail.com', '192.168.65.1', '2025-04-28 06:39:12', 1),
+(11, 7, 'alessandrodezuani@gmail.com', '192.168.65.1', '2025-04-28 09:33:23', 1),
+(12, NULL, 'alessandrodezuani@gmail.com', '192.168.65.1', '2025-04-28 09:34:00', 0);
 
 -- --------------------------------------------------------
 
@@ -375,7 +377,7 @@ ALTER TABLE `banned_emails`
 -- AUTO_INCREMENT per la tabella `banned_ips`
 --
 ALTER TABLE `banned_ips`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `iscrizioni_manifestazioni`
@@ -387,13 +389,13 @@ ALTER TABLE `iscrizioni_manifestazioni`
 -- AUTO_INCREMENT per la tabella `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT per la tabella `manifestazioni`
 --
 ALTER TABLE `manifestazioni`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT per la tabella `soci`

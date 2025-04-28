@@ -122,7 +122,6 @@ if (isset($_POST['submit'])) {
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <div class="form-floating mb-3 mb-md-0">
-                                                <input class="form-control" id="password" name="password" type="password" placeholder="Crea una password" required/>
                                                 <input class="form-control" id="password" name="password" type="password" placeholder="Crea una password" required
                                                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
                                                 title="Almeno un numero, una maiuscola, una minuscola, min 6 caratteri"/>

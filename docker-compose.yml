@@ -20,6 +20,7 @@ services:
       MARIADB_DATABASE: loginsystem
       MARIADB_USER: appuser
       MARIADB_PASSWORD: paolino53
+      TZ: Europe/Rome
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -34,7 +35,7 @@ services:
     environment:
       PMA_HOST: db
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: rootpassword # Nota: Questa password dovrebbe corrispondere a MARIADB_ROOT_PASSWORD
     ports:
       - "8080:80"
     depends_on:
@@ -48,3 +49,4 @@ networks:
 
 volumes:
   mariadb_data:
+
