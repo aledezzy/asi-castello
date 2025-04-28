@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['iscriviti'])) {
                                             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                                             $mail->Port = SMTP_PORT;
                                             $mail->CharSet = 'UTF-8';
-                                            $mail->setFrom('MAIL_FROM', 'MAIL_FROM_NAME');
+                                            $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
                                             $mail->addAddress($email_utente, $nome_utente);
                                             $mail->isHTML(true);
                                             $mail->Subject = 'Conferma Iscrizione Manifestazione: ' . htmlspecialchars($titolo_manifestazione);
