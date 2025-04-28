@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Apr 26, 2025 at 11:09 AM
--- Server version: 10.6.21-MariaDB-ubu2004
--- PHP Version: 8.2.27
+-- Creato il: Apr 28, 2025 alle 09:25
+-- Versione del server: 10.6.21-MariaDB-ubu2004
+-- Versione PHP: 8.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
+-- Struttura della tabella `admin`
 --
 
 CREATE TABLE `admin` (
@@ -34,7 +34,7 @@ CREATE TABLE `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `admin`
+-- Dump dei dati per la tabella `admin`
 --
 
 INSERT INTO `admin` (`id`, `username`, `password`) VALUES
@@ -44,7 +44,7 @@ INSERT INTO `admin` (`id`, `username`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `auto`
+-- Struttura della tabella `auto`
 --
 
 CREATE TABLE `auto` (
@@ -61,25 +61,26 @@ CREATE TABLE `auto` (
   `has_certificazione_asi` tinyint(1) NOT NULL DEFAULT 0,
   `targa_oro` tinyint(1) NOT NULL DEFAULT 0,
   `note` text DEFAULT NULL,
-  `foto` text DEFAULT NULL,
+  `foto1` varchar(255) DEFAULT NULL COMMENT 'Nome del file della prima foto',
+  `foto2` varchar(255) DEFAULT NULL COMMENT 'Nome del file della seconda foto',
   `data_inserimento` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `auto`
+-- Dump dei dati per la tabella `auto`
 --
 
-INSERT INTO `auto` (`id`, `id_socio`, `marca`, `modello`, `targa`, `numero_telaio`, `colore`, `cilindrata`, `tipo_carburante`, `anno_immatricolazione`, `has_certificazione_asi`, `targa_oro`, `note`, `foto`, `data_inserimento`) VALUES
-(1, 1, 'Fiat', '500 F', 'AA123BB', 'F110D-1234567', 'Blu', 499, 'Benzina', '1968', 0, 0, 'Auto restaurata nel 2022.', NULL, '2025-04-23 08:10:00'),
-(2, 1, 'Alfa Romeo', 'Giulia 1600 Super', 'CC456DD', 'AR10526-8901234', 'Rosso Alfa', 1570, 'Benzina', '1972', 1, 0, 'Auto originale, in ottime condizioni.', NULL, '2025-04-23 08:11:00'),
-(3, 2, 'Volkswagen', 'Maggiolino 1300', 'EE789FF', '1102587410', 'Giallo brillante', 1285, 'Benzina', '1970', 1, 1, 'Certificata ASI Targa Oro.', NULL, '2025-04-23 08:12:00'),
-(4, 3, 'Lancia', 'Fulvia Coupé 1.3 S', 'GG012HH', '818630-001578', 'Verde Derby', 1298, 'Benzina', '1974', 1, 0, 'Auto utilizzata regolarmente per raduni. Revisionata di recente.', NULL, '2025-04-23 08:13:00'),
-(5, 4, 'Porsche', '911 T 2.2 (E-Series)', 'XX342GH', '771638', 'Grigio Scuro', 2190, 'Benzina', '1971', 0, 0, 'Modello \"T\" con motore 2.2, importazione USA.', NULL, '2025-04-23 10:35:37');
+INSERT INTO `auto` (`id`, `id_socio`, `marca`, `modello`, `targa`, `numero_telaio`, `colore`, `cilindrata`, `tipo_carburante`, `anno_immatricolazione`, `has_certificazione_asi`, `targa_oro`, `note`, `foto1`, `foto2`, `data_inserimento`) VALUES
+(1, 1, 'Fiat', '500 F', 'AA123BB', 'F110D-1234567', 'Blu', 499, 'Benzina', '1968', 0, 0, 'Auto restaurata nel 2022.', NULL, NULL, '2025-04-23 08:10:00'),
+(2, 1, 'Alfa Romeo', 'Giulia 1600 Super', 'CC456DD', 'AR10526-8901234', 'Rosso Alfa', 1570, 'Benzina', '1972', 1, 0, 'Auto originale, in ottime condizioni.', NULL, NULL, '2025-04-23 08:11:00'),
+(3, 2, 'Volkswagen', 'Maggiolino 1300', 'EE789FF', '1102587410', 'Giallo brillante', 1285, 'Benzina', '1970', 1, 1, 'Certificata ASI Targa Oro.', NULL, NULL, '2025-04-23 08:12:00'),
+(4, 3, 'Lancia', 'Fulvia Coupé 1.3 S', 'GG012HH', '818630-001578', 'Verde Derby', 1298, 'Benzina', '1974', 1, 0, 'Auto utilizzata regolarmente per raduni. Revisionata di recente.', NULL, NULL, '2025-04-23 08:13:00'),
+(5, 4, 'Porsche', '911 T 2.2 (E-Series)', 'XX342GH', '771638', 'Grigio Scuro', 2190, 'Benzina', '1971', 0, 0, 'Modello \"T\" con motore 2.2, importazione USA.', 'auto_4_1745831666_f1d8534e6708305a.jpg', 'auto_4_1745831666_1c7a5300f96c70f2.jpg', '2025-04-23 10:35:37');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `banned_emails`
+-- Struttura della tabella `banned_emails`
 --
 
 CREATE TABLE `banned_emails` (
@@ -90,7 +91,7 @@ CREATE TABLE `banned_emails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `banned_emails`
+-- Dump dei dati per la tabella `banned_emails`
 --
 
 INSERT INTO `banned_emails` (`id`, `email`, `reason`, `banned_at`) VALUES
@@ -102,7 +103,7 @@ INSERT INTO `banned_emails` (`id`, `email`, `reason`, `banned_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `banned_ips`
+-- Struttura della tabella `banned_ips`
 --
 
 CREATE TABLE `banned_ips` (
@@ -113,7 +114,7 @@ CREATE TABLE `banned_ips` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `banned_ips`
+-- Dump dei dati per la tabella `banned_ips`
 --
 
 INSERT INTO `banned_ips` (`id`, `ip_address`, `reason`, `banned_at`) VALUES
@@ -124,7 +125,7 @@ INSERT INTO `banned_ips` (`id`, `ip_address`, `reason`, `banned_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `iscrizioni_manifestazioni`
+-- Struttura della tabella `iscrizioni_manifestazioni`
 --
 
 CREATE TABLE `iscrizioni_manifestazioni` (
@@ -145,7 +146,7 @@ CREATE TABLE `iscrizioni_manifestazioni` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `iscrizioni_manifestazioni`
+-- Dump dei dati per la tabella `iscrizioni_manifestazioni`
 --
 
 INSERT INTO `iscrizioni_manifestazioni` (`id`, `id_manifestazione`, `id_user`, `numero_partecipanti`, `data_iscrizione`, `stato_pagamento`, `otp_codice`, `otp_expires`, `otp_confirmed`, `car_marca`, `car_modello`, `car_targa`, `id_auto_socio`, `note_iscrizione`) VALUES
@@ -155,7 +156,7 @@ INSERT INTO `iscrizioni_manifestazioni` (`id`, `id_manifestazione`, `id_user`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_attempts`
+-- Struttura della tabella `login_attempts`
 --
 
 CREATE TABLE `login_attempts` (
@@ -168,7 +169,7 @@ CREATE TABLE `login_attempts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `login_attempts`
+-- Dump dei dati per la tabella `login_attempts`
 --
 
 INSERT INTO `login_attempts` (`id`, `user_id`, `email_attempted`, `ip_address`, `attempt_timestamp`, `success`) VALUES
@@ -179,12 +180,14 @@ INSERT INTO `login_attempts` (`id`, `user_id`, `email_attempted`, `ip_address`, 
 (5, 7, 'alessandrodezuani@gmail.com', '127.0.0.1', '2025-04-23 10:24:32', 1),
 (6, 7, 'alessandrodezuani@gmail.com', '172.18.0.1', '2025-04-26 10:29:13', 1),
 (7, 8, 'andreasanto.morabito@allievi.itsdigitalacademy.com', '172.18.0.1', '2025-04-26 10:34:01', 1),
-(8, 9, 'aledezuani@outlook.it', '172.18.0.1', '2025-04-26 10:53:50', 1);
+(8, 9, 'aledezuani@outlook.it', '172.18.0.1', '2025-04-26 10:53:50', 1),
+(9, 9, 'aledezuani@outlook.it', '192.168.65.1', '2025-04-28 06:39:01', 1),
+(10, 7, 'alessandrodezuani@gmail.com', '192.168.65.1', '2025-04-28 06:39:12', 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `manifestazioni`
+-- Struttura della tabella `manifestazioni`
 --
 
 CREATE TABLE `manifestazioni` (
@@ -200,7 +203,7 @@ CREATE TABLE `manifestazioni` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `manifestazioni`
+-- Dump dei dati per la tabella `manifestazioni`
 --
 
 INSERT INTO `manifestazioni` (`id`, `titolo`, `data_inizio`, `data_creazione`, `data_chiusura_iscrizioni`, `programma`, `luogo_ritrovo`, `quota_pranzo`, `note`) VALUES
@@ -211,7 +214,7 @@ INSERT INTO `manifestazioni` (`id`, `titolo`, `data_inizio`, `data_creazione`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `soci`
+-- Struttura della tabella `soci`
 --
 
 CREATE TABLE `soci` (
@@ -228,7 +231,7 @@ CREATE TABLE `soci` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `soci`
+-- Dump dei dati per la tabella `soci`
 --
 
 INSERT INTO `soci` (`id`, `codice_fiscale`, `nome`, `cognome`, `tessera_club_numero`, `tessera_club_scadenza`, `has_tessera_asi`, `tessera_asi_numero`, `data_iscrizione_club`, `note`) VALUES
@@ -240,7 +243,7 @@ INSERT INTO `soci` (`id`, `codice_fiscale`, `nome`, `cognome`, `tessera_club_num
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struttura della tabella `users`
 --
 
 CREATE TABLE `users` (
@@ -265,7 +268,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `users`
+-- Dump dei dati per la tabella `users`
 --
 
 INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`, `new_password_hash`, `contactno`, `reset_token_hash`, `reset_token_expires_at`, `change_password_token_hash`, `change_password_token_expires_at`, `posting_date`, `is_active`, `activation_token`, `activation_token_expires`, `reset_password_token`, `reset_password_token_expires`, `id_socio`) VALUES
@@ -276,17 +279,17 @@ INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`, `new_password_
 (9, 'Ale', 'Dezzy', 'aledezuani@outlook.it', '$2y$10$azudXP78fRfRGB8KRpyB7Oe/SEYy9INtHa6uv01P0tdwmAYFwFuse', NULL, '7898778979', NULL, NULL, NULL, NULL, '2025-04-26 10:52:16', 1, NULL, NULL, NULL, NULL, NULL);
 
 --
--- Indexes for dumped tables
+-- Indici per le tabelle scaricate
 --
 
 --
--- Indexes for table `admin`
+-- Indici per le tabelle `admin`
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `auto`
+-- Indici per le tabelle `auto`
 --
 ALTER TABLE `auto`
   ADD PRIMARY KEY (`id`),
@@ -295,21 +298,21 @@ ALTER TABLE `auto`
   ADD KEY `idx_id_socio` (`id_socio`);
 
 --
--- Indexes for table `banned_emails`
+-- Indici per le tabelle `banned_emails`
 --
 ALTER TABLE `banned_emails`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `banned_ips`
+-- Indici per le tabelle `banned_ips`
 --
 ALTER TABLE `banned_ips`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ip_address` (`ip_address`);
 
 --
--- Indexes for table `iscrizioni_manifestazioni`
+-- Indici per le tabelle `iscrizioni_manifestazioni`
 --
 ALTER TABLE `iscrizioni_manifestazioni`
   ADD PRIMARY KEY (`id`),
@@ -319,7 +322,7 @@ ALTER TABLE `iscrizioni_manifestazioni`
   ADD KEY `fk_iscrizioni_auto` (`id_auto_socio`);
 
 --
--- Indexes for table `login_attempts`
+-- Indici per le tabelle `login_attempts`
 --
 ALTER TABLE `login_attempts`
   ADD PRIMARY KEY (`id`),
@@ -327,95 +330,95 @@ ALTER TABLE `login_attempts`
   ADD KEY `idx_ip_address` (`ip_address`);
 
 --
--- Indexes for table `manifestazioni`
+-- Indici per le tabelle `manifestazioni`
 --
 ALTER TABLE `manifestazioni`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `soci`
+-- Indici per le tabelle `soci`
 --
 ALTER TABLE `soci`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `codice_fiscale` (`codice_fiscale`);
 
 --
--- Indexes for table `users`
+-- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_id_socio` (`id_socio`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
--- AUTO_INCREMENT for table `admin`
+-- AUTO_INCREMENT per la tabella `admin`
 --
 ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `auto`
+-- AUTO_INCREMENT per la tabella `auto`
 --
 ALTER TABLE `auto`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `banned_emails`
+-- AUTO_INCREMENT per la tabella `banned_emails`
 --
 ALTER TABLE `banned_emails`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `banned_ips`
+-- AUTO_INCREMENT per la tabella `banned_ips`
 --
 ALTER TABLE `banned_ips`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `iscrizioni_manifestazioni`
+-- AUTO_INCREMENT per la tabella `iscrizioni_manifestazioni`
 --
 ALTER TABLE `iscrizioni_manifestazioni`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `login_attempts`
+-- AUTO_INCREMENT per la tabella `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `manifestazioni`
+-- AUTO_INCREMENT per la tabella `manifestazioni`
 --
 ALTER TABLE `manifestazioni`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `soci`
+-- AUTO_INCREMENT per la tabella `soci`
 --
 ALTER TABLE `soci`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT per la tabella `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- Constraints for dumped tables
+-- Limiti per le tabelle scaricate
 --
 
 --
--- Constraints for table `auto`
+-- Limiti per la tabella `auto`
 --
 ALTER TABLE `auto`
   ADD CONSTRAINT `fk_auto_socio` FOREIGN KEY (`id_socio`) REFERENCES `soci` (`id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `iscrizioni_manifestazioni`
+-- Limiti per la tabella `iscrizioni_manifestazioni`
 --
 ALTER TABLE `iscrizioni_manifestazioni`
   ADD CONSTRAINT `fk_iscrizioni_auto_socio` FOREIGN KEY (`id_auto_socio`) REFERENCES `auto` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -423,13 +426,13 @@ ALTER TABLE `iscrizioni_manifestazioni`
   ADD CONSTRAINT `fk_iscrizioni_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `login_attempts`
+-- Limiti per la tabella `login_attempts`
 --
 ALTER TABLE `login_attempts`
   ADD CONSTRAINT `fk_login_attempts_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `users`
+-- Limiti per la tabella `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `fk_user_socio` FOREIGN KEY (`id_socio`) REFERENCES `soci` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
