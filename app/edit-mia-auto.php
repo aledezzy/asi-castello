@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('includes/config.php'); // Include config per $con e costanti
+include_once 'includes/config.php'; // Include config per $con e costanti
 
 // Verifica se l'utente è loggato
 if (strlen($_SESSION['id'] ?? 0) == 0) {
@@ -15,7 +15,7 @@ $errori_form = []; // Array per memorizzare errori specifici dei campi
 $auto_data = null; // Array per i dati dell'auto da modificare
 $id_socio_utente = null; // ID socio associato all'utente loggato
 
-define('UPLOAD_DIR', 'uploads/auto_foto/'); 
+define('UPLOAD_DIR', 'uploads/auto_foto/');
 define('MAX_FILE_SIZE', 2 * 1024 * 1024); // 2 MB
 $allowed_mime_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -114,7 +114,7 @@ function process_uploaded_file($file_key, $allowed_mime_types, $allowed_extensio
 // --- Gestione Modifica Auto (POST) ---
 // Procedi solo se l'utente è un socio
 if (isset($_POST['submit']) && $id_socio_utente !== null) {
-    // Recupera dati form (come prima)
+    // Recupera dati form
     $marca = trim($_POST['marca'] ?? '');
     $modello = trim($_POST['modello'] ?? '');
     $targa = trim(strtoupper($_POST['targa'] ?? ''));
@@ -140,11 +140,11 @@ if (isset($_POST['submit']) && $id_socio_utente !== null) {
     $foto2_filename = $existing_foto2;
     $uploaded_files_to_delete_on_error = []; // Per cleanup
 
-    // --- Validazione Input (come prima) ---
+   
     if (empty($marca)) $errori_form['marca'] = "La marca è obbligatoria.";
     if (empty($modello)) $errori_form['modello'] = "Il modello è obbligatorio.";
     if (empty($targa)) $errori_form['targa'] = "La targa è obbligatoria.";
-    // ... (altre validazioni come prima: telaio, cilindrata, anno) ...
+    
     if (!empty($numero_telaio)) {
         $stmt_check_telaio = mysqli_prepare($con, "SELECT id FROM auto WHERE numero_telaio = ? AND id != ?");
         if ($stmt_check_telaio) {
@@ -382,9 +382,9 @@ mysqli_close($con);
         </style>
     </head>
     <body class="sb-nav-fixed">
-      <?php include_once('includes/navbar.php');?>
+      <?php include_once 'includes/navbar.php';?>
         <div id="layoutSidenav">
-         <?php include_once('includes/sidebar.php');?>
+         <?php include_once 'includes/sidebar.php';?>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
@@ -563,7 +563,7 @@ mysqli_close($con);
                         <?php endif; // Fine controllo $id_socio_utente e $auto_data ?>
                     </div>
                 </main>
-                <?php include('includes/footer.php');?>
+                <?php include 'includes/footer.php';?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('includes/config.php');
+include_once 'includes/config.php';
 
 // Verifica se l'utente è loggato
 if (strlen($_SESSION['id'] ?? 0) == 0) {

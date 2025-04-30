@@ -1,5 +1,5 @@
 <?php session_start();
-include_once('includes/config.php');
+include_once 'includes/config.php';
 
 if (strlen($_SESSION['id'] ?? 0) == 0) {
   header('location:logout.php');
@@ -130,7 +130,7 @@ if (strlen($_SESSION['id'] ?? 0) == 0) {
 
                     </div>
                 </main>
-          <?php include('includes/footer.php');?>
+          <?php include 'includes/footer.php';?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

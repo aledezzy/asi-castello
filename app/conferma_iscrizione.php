@@ -199,10 +199,10 @@ mysqli_close($con); // Chiudi la connessione al database
 </head>
 <body class="sb-nav-fixed">
 
-    <?php include_once('includes/navbar.php');?>
+    <?php include_once 'includes/navbar.php';?>
 
     <div id="layoutSidenav">
-        <?php include_once('includes/sidebar.php');?>
+        <?php include_once 'includes/sidebar.php';?>
 
         <div id="layoutSidenav_content">
             <main>
@@ -255,7 +255,7 @@ mysqli_close($con); // Chiudi la connessione al database
 
                 </div>
             </main>
-            <?php include('includes/footer.php');?>
+            <?php include 'includes/footer.php';?>
         </div>
     </div>
 

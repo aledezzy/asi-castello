@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('includes/config.php');
+include_once 'includes/config.php';
 
 // Verifica se l'utente è loggato
 if (strlen($_SESSION['id'] ?? 0) == 0) {
@@ -110,7 +110,7 @@ if ($id_socio_utente !== null) { // Solo se l'utente è un socio
         mysqli_stmt_close($stmt_auto);
     } else {
         $messaggio .= "<br>Errore nel recupero delle tue auto: " . mysqli_error($con);
-        if($messaggio_tipo != 'danger') $messaggio_tipo = 'warning';
+        if($messaggio_tipo != 'danger') {$messaggio_tipo = 'warning';}
         error_log("User Fetch Auto Error: " . mysqli_error($con));
     }
 }
@@ -140,9 +140,9 @@ mysqli_close($con);
         </style>
     </head>
     <body class="sb-nav-fixed">
-      <?php include_once('includes/navbar.php');?>
+      <?php include_once 'includes/navbar.php';?>
         <div id="layoutSidenav">
-         <?php include_once('includes/sidebar.php');?>
+         <?php include_once 'includes/sidebar.php';?>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
@@ -249,7 +249,7 @@ mysqli_close($con);
 
                     </div>
                 </main>
-                <?php include('includes/footer.php');?>
+                <?php include 'includes/footer.php';?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>

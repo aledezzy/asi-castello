@@ -1,13 +1,12 @@
 <?php
 // visualizza_foto.php
-session_start(); // Potrebbe servire se vuoi aggiungere controlli di accesso basati sulla sessione
-
+session_start(); 
 
 define('UPLOAD_DIR', 'uploads/auto_foto/'); 
 
-// Recupera il nome del file dalla query string e sanificalo
-$filename = filter_input(INPUT_GET, 'file'); //
-// --- Validazione più robusta del nome file ---
+
+$filename = filter_input(INPUT_GET, 'file'); 
+-
 
 $filename_cleaned = basename(str_replace('..', '', $filename ?? ''));
 
@@ -17,10 +16,9 @@ if (!$filename || $filename !== $filename_cleaned || empty($filename_cleaned)) {
     exit;
 }
 // --- Fine Validazione Nome File ---
+$filepath = UPLOAD_DIR . $filename_cleaned; 
 
-$filepath = UPLOAD_DIR . $filename_cleaned; // Usa il nome file pulito
 
-// Verifica se il file esiste ed è leggibile
 if (file_exists($filepath) && is_readable($filepath)) {
 
     // Determina il tipo MIME corretto leggendo il file (più sicuro dell'estensione)
@@ -34,7 +32,7 @@ if (file_exists($filepath) && is_readable($filepath)) {
     $mime_type = finfo_file($finfo, $filepath);
     finfo_close($finfo);
 
-    // Lista bianca dei tipi MIME consentiti per la visualizzazione
+    
     $allowed_display_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!in_array($mime_type, $allowed_display_types)) {
         http_response_code(403); // Forbidden
@@ -48,12 +46,11 @@ if (file_exists($filepath) && is_readable($filepath)) {
     // Imposta la lunghezza del contenuto per ottimizzare il caricamento
     header('Content-Length: ' . filesize($filepath));
     // Opzionale: Aggiungi header per il caching per migliorare le prestazioni
-    // header('Cache-Control: max-age=86400'); // Cache per 1 giorno
-    // header('Pragma: cache');
-    // header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
+    header('Cache-Control: max-age=86400'); // Cache per 1 giorno
+    header('Pragma: cache');
+    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 86400) . ' GMT');
 
-    // Leggi e invia il contenuto del file al browser
-    // Disabilita l'output buffering se attivo per evitare problemi di memoria con file grandi
+    
     if (ob_get_level()) {
         ob_end_clean();
     }
@@ -61,7 +58,7 @@ if (file_exists($filepath) && is_readable($filepath)) {
     exit; // Termina lo script dopo aver inviato il file
 
 } else {
-    // File non trovato o non leggibile
+    
     http_response_code(404);
     error_log("File non trovato o non leggibile: $filepath"); // Logga l'errore
     // Potresti mostrare un'immagine placeholder invece di un messaggio di testo

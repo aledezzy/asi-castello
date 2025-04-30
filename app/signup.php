@@ -67,9 +67,9 @@ if(isset($_POST['submit']))
         }
         // --- Fine Validazione Aggiuntiva ---
 
-        // Procedi solo se non ci sono errori di validazione
+       
         if (empty($error_message)) {
-            // --- Controlla se l'email esiste già usando statement preparati ---
+            
             $stmt_check = mysqli_prepare($con, "SELECT id FROM users WHERE email=?");
             if ($stmt_check) {
                 mysqli_stmt_bind_param($stmt_check, "s", $email);
@@ -80,10 +80,10 @@ if(isset($_POST['submit']))
 
                 if($row_count > 0)
                 {
-                    // Usa $error_message invece di echo diretto
+                    
                     $error_message = 'Email già in uso, riprova con un\'altra mail o fai il login.';
                 } else {
-                    // --- Email non esiste, procedi con la registrazione ---
+                    
                     try {
                         // --- Genera Token di Attivazione ---
                         $activation_token_raw = bin2hex(random_bytes(32));
@@ -117,7 +117,7 @@ if(isset($_POST['submit']))
                                 // --- Invia Email di Attivazione ---
                                 $mail = new PHPMailer(true);
                                 try {
-                                    // Impostazioni Server (DA CONFIGURARE IN config.php o qui)
+                                    
                                     $mail->isSMTP();
                                     $mail->Host = SMTP_HOST;
                                     $mail->SMTPAuth = true;
@@ -128,16 +128,16 @@ if(isset($_POST['submit']))
                                     $mail->CharSet = 'UTF-8';
 
                                     // Mittente e Destinatario
-                                    $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME); // 'noreply@tuosito.com', 'Nome Tuo Sito'
+                                    $mail->setFrom(MAIL_FROM, MAIL_FROM_NAME);
                                     $mail->addAddress($email, $fname . ' ' . $lname);
 
                                     // Contenuto
                                     $mail->isHTML(true);
                                     $mail->Subject = 'Attiva il tuo account su ' . MAIL_FROM_NAME;
 
-                                    // --- MODIFICA QUESTO URL BASE ---
-                                    $activationLinkBase = APP_BASE_URL; // Cambia con il tuo URL reale!
-                                    // --- ------------------------ ---
+                                    
+                                    $activationLinkBase = APP_BASE_URL;
+                                    
                                     $activationLink = $activationLinkBase . "activate-account.php?token=" . urlencode($activation_token_raw); // Usa il token RAW nel link
 
                                     $bodyContent = "Gentile " . htmlspecialchars($fname) . ",<br><br>";
