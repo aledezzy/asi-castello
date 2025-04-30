@@ -1,0 +1,166 @@
+$logoFont: 'Yellowtail', cursive
+$mainFont: 'Montserrat', sans-serif 
+
+
+//Mixins
+@mixin hoverEffect($color)
+    -webkit-filter: grayscale(100%) //for Safari
+    filter: grayscale(100%)
+    transition: 0.3s ease-in-out
+    &:hover
+        background-color: $color
+        -webkit-filter: grayscale(0%) //for Safari
+        filter: grayscale(0%)
+
+// Nav Styles for Tickets Page
+header #navTickets
+    border-bottom: 1px solid black
+    a
+        color: black
+
+    #buyTickets
+        display: none
+    
+#navTicketsIcon
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")
+
+#navTickets.scrolled
+    background: black
+    transition: 0.5s ease-in-out
+    a
+        color: white
+
+    #navTicketsIcon
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")
+
+//Heading - Section 1
+#ticketsHText
+    padding-top: 5rem
+
+    #ticketsHHero
+        font-family: $logoFont
+        font-size: 3.5em
+    
+    #ticketsHPara
+        font-family: $mainFont
+        font-weight: 400
+        font-size: 1em
+    
+    #ticketsHAlert
+        border-radius: 15px
+        background-color: darkred
+        color: white
+
+//Panel - Section 2
+.PanelSectionContainer
+    margin-top: 2rem
+    margin-bottom: 1rem
+    background-color: white
+
+    .PanelSection
+        border-radius: 20px
+        background-color: black
+        color: white
+
+        .buyButton
+            color: white
+            font-weight: bold
+            font-size: 1.5em
+            background-color: transparent
+            padding: 15px
+            border: 1.5px solid white
+            border-radius: 10px
+            transition: 0.2s ease-in-out
+            text-decoration: none
+            &:hover
+                color: black
+                background-color: white
+                border-radius: 7px
+
+        div
+            padding: 20px
+            border-radius: 20px 0px 0px 20px
+            @include hoverEffect(#577ae3)
+        
+        div:nth-child(2)
+            border-radius: 0px 0px 0px 0px
+            @include hoverEffect(#5ebec0)
+
+        div:nth-child(3)
+            border-radius: 0px 20px 20px 0px
+            @include hoverEffect(#c92538)
+
+        h2
+            font-weight: 800
+            font-size: 2em
+        
+        h3
+            font-weight: 800
+            font-size: 2em
+            letter-spacing: 0.1em
+            margin-bottom: 40px
+
+        h4
+            font-weight: 300
+            font-size: 0.9em
+        
+        ul
+            font-size: 1em
+            list-style: none
+            padding: 0px
+
+            li
+                padding: 10px
+                border-bottom: 0.5px solid #54545417
+            
+            li:first-child 
+                border-top: 0.5px solid #54545417
+
+#homeButton
+    color: black
+    font-size: 1.3em
+    font-weight: bold
+    background-color: transparent
+    border: none
+    padding-top: 15px
+    padding-left: 0px
+    letter-spacing: 0.1em
+    transition: .2s ease-in-out
+
+    &:hover
+        background-color: transparent
+        color: red
+        transform: translateX(-5px)
+
+//Media Query
+@media screen and (max-width: 768px)
+    #ticketsHText #ticketsHHero
+        font-size: 2.5em
+
+    #ticketsHText #ticketsHAlert
+        font-size: 0.9em
+
+    #panelID .PanelSection
+        margin: 20px auto
+        div
+            -webkit-filter: grayscale(0%) //for Safari
+            filter: grayscale(0%)
+            background-color: #577ae3
+            border-radius: 20px 20px 0px 0px
+
+        div:nth-child(2)
+            -webkit-filter: grayscale(0%) //for Safari
+            filter: grayscale(0%)
+            background-color: #5ebec0
+            border-radius: 0px 0px 0px 0px
+
+        div:nth-child(3)
+            -webkit-filter: grayscale(0%) //for Safari
+            filter: grayscale(0%)
+            background-color: #c92538
+            border-radius: 0px 0px 20px 20px
+
+        #homeButtonSection
+            display: flex
+            align-items: center
+            justify-content: center

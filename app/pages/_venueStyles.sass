@@ -1,0 +1,475 @@
+$logoFont: 'Yellowtail', cursive
+$mainFont: 'Montserrat', sans-serif
+
+//mixins
+@mixin heroBannerStyles($imagePath, $textViewportHeight)
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url($imagePath)
+        filter: grayscale(1)
+        background-size: cover
+        background-position: center
+        background-repeat: no-repeat
+        height: $textViewportHeight
+        display: flex
+        padding: 0px
+        justify-content: center
+        align-items: center
+        text-align: center
+        transition: all 0.3s ease-in-out
+    
+        &:hover
+            filter: grayscale(0)
+            webkit-filter: grayscale(0) //for Safari
+
+        .VheroText
+            font-family: $logoFont
+            font-size: 5em
+            color: white
+            display: flex
+            justify-content: center
+            align-items: center
+            display: inline
+        
+        p
+            padding: 20px
+            font-family: $mainFont
+            font-size: 1em
+            color: white
+            font-weight: 400
+            flex-direction: column
+
+@mixin inquiryButtonStyles
+    padding: 10px
+    margin-top: 20px
+    box-sizing: border-box
+    font-family: $mainFont
+    font-weight: regular
+    background: transparent
+    border: 1px solid white
+    transition: 0.3s ease-in-out
+
+html 
+    scroll-behavior: smooth
+
+// Nav Styles for Venue Page
+header #navVenue
+    background: transparent
+    border-bottom: 1px solid white
+
+    li:nth-child(2)
+        a
+            font-weight: bold
+    
+    a
+        color: white
+        font-weight: 400
+
+    #buyTickets
+        color: white
+        font-weight: bold
+        background-color: black
+        border: 2px solid white
+        &:hover
+            color: white
+            background-color: red
+            border-radius: 7px
+    
+    #navTicketsIcon
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")
+
+#navVenue.scrolled
+    background: black
+    border-bottom: none
+    transition: 0.5s ease-in-out
+
+    #navTicketsIcon
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")
+
+    .navbar-brand
+        color: white
+
+    a
+        color: #959595
+
+    li:nth-child(2)
+        a
+            font-weight: 400
+            color: white
+
+//Hero Section
+#venueHeroImage
+    @include heroBannerStyles('images/venue-1.jpg', 75%)
+
+#heroTextMain 
+    padding-top: 150px
+    padding-bottom: 150px
+
+.overview h2
+        font-family: $logoFont
+        font-size: 4em
+        padding: 15px
+
+//Section 2
+#venueHeroImage2
+    @include heroBannerStyles('images/venue-2.jpg', 75%)
+
+    ul
+        color: white
+        list-style: none
+        line-height: 2em
+        padding: 0px
+    
+    #penthouseHeading
+        padding: 0px
+        margin: 0px
+        line-height: 2em
+        font-weight: bold
+
+    .inquiryButton
+        @include inquiryButtonStyles
+        &:hover
+            border: 1px solid white
+            background-color: #0d0d0d2a
+
+#heroTextMain2 
+    padding-top: 150px
+    padding-bottom: 150px
+
+//Section 3
+.venueGridSection
+    background: black
+    padding: 0px
+    padding-top: 30px
+    padding-bottom: 30px
+    filter: grayscale(1)
+    -webkit-filter: grayscale(1) //for Safari
+    transition: 0.3s ease-in-out
+    &:hover
+        filter: grayscale(0)
+        -webkit-filter: grayscale(0) //for Safari
+    
+    .inquiryButton
+        @include inquiryButtonStyles
+        &:hover
+            border: 1px solid white
+            background-color: #fafafa34
+
+#heroText3
+    font-family: $mainFont
+    font-family: $logoFont
+    padding: 0px
+    padding-bottom: 20px
+    font-size: 5em
+    color: white
+
+.venueGridItem
+    border-radius: 5px
+
+    img 
+        width: 100%
+        height: 100%
+        border-radius: 5px
+        transition: 2s ease-in-out
+        &:hover
+            transform: scale(1.1)
+
+.venueGridCaptions
+    padding: 0px
+
+    h5
+        font-weight: bold
+        font-size: 1em
+        letter-spacing: 1px
+        text-transform: uppercase
+        margin: 0px
+
+.venueGridList
+    text-align: center
+    padding-top: 10px
+
+    ul
+        color: white
+        list-style: none
+        line-height: 2em
+        padding: 0px
+
+//Section 4
+.venueGridSection2
+    background: white
+    padding: 0px
+    padding-top: 30px
+    padding-bottom: 30px
+    filter: grayscale(1)
+    -webkit-filter: grayscale(1) //for Safari
+    transition: 0.3s ease-in-out
+    &:hover
+        filter: grayscale(0)
+        -webkit-filter: grayscale(0) //for Safari
+    
+    .inquiryButton2
+        @include inquiryButtonStyles
+        color: black
+        border: 1px solid black
+        &:hover
+            border: 1px solid black
+            color: black
+            background-color: #0000000c
+    
+    .memberButton
+        @include inquiryButtonStyles
+        color: white
+        background: black
+        border: 1px solid black
+        &:hover
+            border: 1px solid black
+            color: white
+            background-color: #222222e2
+
+.venueGridItem2
+    border-radius: 5px
+    img 
+        width: 100%
+        height: 100%
+        border-radius: 5px
+        transition: 2s ease-in-out
+        &:hover
+            transform: scale(1.1)
+
+.venueGridList2
+    text-align: center
+    padding-top: 10px
+
+    ul
+        color: black
+        list-style: none
+        line-height: 2em
+        padding: 0px
+
+#heroText4
+    color: black
+    font-family: $mainFont
+    font-family: $logoFont
+    padding: 0px
+    padding-bottom: 20px
+    font-size: 5em
+
+//Section 5
+.venueHeroImage3
+    @include heroBannerStyles('images/form-bg.jpg', 100%)
+
+.formSection
+    color: white
+    justify-content: left
+    align-items: left
+    text-align: left
+    padding-top: 10px
+    padding-bottom: 10px
+
+    .formDate
+        padding-left: 10px
+
+    .formDateCont
+        div:nth-child(2)::after
+            content: "MM"
+            color: #d4d4d4
+            font-size: 0.8em
+        
+        div:nth-child(3)::after
+            content: "DD"
+            color: #d4d4d4
+            font-size: 0.8em
+
+        div:nth-child(4)::after
+            content: "YYYY"
+            color: #d4d4d4
+            font-size: 0.8em
+
+    span
+        color: red
+
+    label
+        margin: 0px
+        font-size: 1em
+        padding: 15px
+        padding-left: 0px
+
+    input
+        background: #ffffff2f
+        border: 1.5px solid white
+        border: 1px solid white
+        color: white
+        
+        &:focus
+            color: white
+            background: #ffffff4f
+            border: 1px solid white
+            box-shadow: 5px 6px 5px -5px #fdfdfdbf
+            -webkit-box-shadow: 5px 6px 5px -5px #ffffffbf
+            -moz-box-shadow: 5px 6px 5px -5px #ffffffbf
+
+    input[type=number] 
+        -moz-appearance: textfield
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button 
+        -webkit-appearance: none
+        margin: 0px
+
+    input::placeholder
+        color: #edecec
+        font-family: $mainFont
+
+    textarea::placeholder
+        color: #edecec
+        font-family: $mainFont
+    
+    select 
+        background: #ffffff2f
+        border: 1.5px solid white
+        border: 1px solid white
+        color: white
+        
+        &:focus
+            background: #ffffff4f
+            border: 1px solid white
+            box-shadow: 5px 6px 5px -5px #fdfdfdbf
+            -webkit-box-shadow: 5px 6px 5px -5px #ffffffbf
+            -moz-box-shadow: 5px 6px 5px -5px #ffffffbf
+
+    .formLong
+        background: #ffffff2f
+        border: 1.5px solid white
+        color: white
+        padding-bottom: 10px
+        height: 30px
+        max-height: 150px
+        
+        &:focus
+            color: white
+            background: #ffffff4f
+            border: 1px solid white
+            box-shadow: 5px 6px 5px -5px #fdfdfdbf
+            -webkit-box-shadow: 5px 6px 5px -5px #ffffffbf
+            -moz-box-shadow: 5px 6px 5px -5px #ffffffbf
+
+    .formSec2
+        border-top: 1px solid #ffffff32
+    
+.formSection .VformButton
+    @include inquiryButtonStyles
+
+    padding: 10px
+    font-size: 1em
+    font-weight: regular
+    transition: 0.3s ease-in-out
+    &:hover
+        background-color: #ffffff4f 
+        border: 1px solid white
+        box-shadow: 5px 6px 5px -5px #fdfdfdbf
+        -webkit-box-shadow: 5px 6px 5px -5px #ffffffbf
+        -moz-box-shadow: 5px 6px 5px -5px #ffffffbf
+
+#formCont
+    padding-top: 50px
+    padding-bottom: 50px
+
+//Media Query for tablets
+@media screen and (max-width: 768px)
+    #venueHeroImage, #venueHeroImage2, .venueHeroImage3
+        filter: grayscale(0)
+        -webkit-filter: grayscale(0) //for Safari
+
+    .venueGridSection, .venueGridSection2
+        filter: grayscale(0)
+        -webkit-filter: grayscale(0) //for Safari
+
+    #venueHeroImage
+        height: 100%
+
+    #venueHeroImage2
+        height: 100%
+
+    .venueHeroImage3
+        height: 100%
+
+    #heroTextMain 
+        padding-top: 100px
+        padding-bottom: 50px
+
+    #heroTextMain2
+        padding-top: 100px
+        padding-bottom: 50px
+
+    #formCont
+        padding-top: 40px
+        padding-bottom: 40px
+
+    .overview
+        font-size: 0.9em
+
+    #heroTextMain2 #heroText2
+        font-size: 3.5em
+
+    #heroText3, #heroText4, #heroText5
+        font-size: 3.0em
+
+//Media Query for mobile
+@media screen and (max-width: 500px)
+    #heroTextMain 
+        #heroText
+            font-size: 3em
+        
+        p
+            padding: 0px
+            padding-top: 10px
+            font-size: 0.9em
+
+    #heroTextMain2
+        #heroText2
+            font-size: 2.5em
+        
+        p
+            padding: 0px
+            padding-top: 10px
+            font-size: 0.9em
+
+        ul
+            padding: 0px
+            padding-top: 10px
+            font-size: 0.9em 
+
+        a
+            font-size: 0.9em
+        
+    .overview
+        font-size: 0.7em
+
+    #heroText3, #heroText4, #heroText5
+        font-size: 2em
+
+    .venueGridItem
+        font-size: 0.8em
+    
+    .venueGridList
+        font-size: 0.9em
+
+    .venueGridCont .inquiryButton
+        font-size: 0.9em
+
+    .venueGridItem2
+        font-size: 0.8em
+    
+    .venueGridList2
+        font-size: 0.9em
+
+    .venueGridCont2 .inquiryButton2
+        font-size: 0.9em
+        padding-left: 25px
+        padding-right: 25px
+
+    .venueGridCont2 .memberButton
+        font-size: 0.9em
+
+    #formCont
+        label
+            font-size: 0.9em
+

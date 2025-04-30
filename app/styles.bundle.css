@@ -1,0 +1,1678 @@
+header #navTickets {
+  border-bottom: 1px solid black;
+}
+header #navTickets a {
+  color: black;
+}
+header #navTickets #buyTickets {
+  display: none;
+}
+
+#navTicketsIcon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+#navTickets.scrolled {
+  background: black;
+  transition: 0.5s ease-in-out;
+}
+#navTickets.scrolled a {
+  color: white;
+}
+#navTickets.scrolled #navTicketsIcon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+#ticketsHText {
+  padding-top: 5rem;
+}
+#ticketsHText #ticketsHHero {
+  font-family: "Yellowtail", cursive;
+  font-size: 3.5em;
+}
+#ticketsHText #ticketsHPara {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 1em;
+}
+#ticketsHText #ticketsHAlert {
+  border-radius: 15px;
+  background-color: darkred;
+  color: white;
+}
+
+.PanelSectionContainer {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  background-color: white;
+}
+.PanelSectionContainer .PanelSection {
+  border-radius: 20px;
+  background-color: black;
+  color: white;
+}
+.PanelSectionContainer .PanelSection .buyButton {
+  color: white;
+  font-weight: bold;
+  font-size: 1.5em;
+  background-color: transparent;
+  padding: 15px;
+  border: 1.5px solid white;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+  text-decoration: none;
+}
+.PanelSectionContainer .PanelSection .buyButton:hover {
+  color: black;
+  background-color: white;
+  border-radius: 7px;
+}
+.PanelSectionContainer .PanelSection div {
+  padding: 20px;
+  border-radius: 20px 0px 0px 20px;
+  filter: grayscale(100%);
+  transition: 0.3s ease-in-out;
+}
+.PanelSectionContainer .PanelSection div:hover {
+  background-color: #577ae3;
+  filter: grayscale(0%);
+}
+.PanelSectionContainer .PanelSection div:nth-child(2) {
+  border-radius: 0px 0px 0px 0px;
+  filter: grayscale(100%);
+  transition: 0.3s ease-in-out;
+}
+.PanelSectionContainer .PanelSection div:nth-child(2):hover {
+  background-color: #5ebec0;
+  filter: grayscale(0%);
+}
+.PanelSectionContainer .PanelSection div:nth-child(3) {
+  border-radius: 0px 20px 20px 0px;
+  filter: grayscale(100%);
+  transition: 0.3s ease-in-out;
+}
+.PanelSectionContainer .PanelSection div:nth-child(3):hover {
+  background-color: #c92538;
+  filter: grayscale(0%);
+}
+.PanelSectionContainer .PanelSection h2 {
+  font-weight: 800;
+  font-size: 2em;
+}
+.PanelSectionContainer .PanelSection h3 {
+  font-weight: 800;
+  font-size: 2em;
+  letter-spacing: 0.1em;
+  margin-bottom: 40px;
+}
+.PanelSectionContainer .PanelSection h4 {
+  font-weight: 300;
+  font-size: 0.9em;
+}
+.PanelSectionContainer .PanelSection ul {
+  font-size: 1em;
+  list-style: none;
+  padding: 0px;
+}
+.PanelSectionContainer .PanelSection ul li {
+  padding: 10px;
+  border-bottom: 0.5px solid rgba(84, 84, 84, 0.0901960784);
+}
+.PanelSectionContainer .PanelSection ul li:first-child {
+  border-top: 0.5px solid rgba(84, 84, 84, 0.0901960784);
+}
+
+#homeButton {
+  color: black;
+  font-size: 1.3em;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  padding-top: 15px;
+  padding-left: 0px;
+  letter-spacing: 0.1em;
+  transition: 0.2s ease-in-out;
+}
+#homeButton:hover {
+  background-color: transparent;
+  color: red;
+  transform: translateX(-5px);
+}
+
+@media screen and (max-width: 768px) {
+  #ticketsHText #ticketsHHero {
+    font-size: 2.5em;
+  }
+  #ticketsHText #ticketsHAlert {
+    font-size: 0.9em;
+  }
+  #panelID .PanelSection {
+    margin: 20px auto;
+  }
+  #panelID .PanelSection div {
+    filter: grayscale(0%);
+    background-color: #577ae3;
+    border-radius: 20px 20px 0px 0px;
+  }
+  #panelID .PanelSection div:nth-child(2) {
+    filter: grayscale(0%);
+    background-color: #5ebec0;
+    border-radius: 0px 0px 0px 0px;
+  }
+  #panelID .PanelSection div:nth-child(3) {
+    filter: grayscale(0%);
+    background-color: #c92538;
+    border-radius: 0px 0px 20px 20px;
+  }
+  #panelID .PanelSection #homeButtonSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+html {
+  scroll-behavior: smooth;
+}
+
+header #navVenue {
+  background: transparent;
+  border-bottom: 1px solid white;
+}
+header #navVenue li:nth-child(2) a {
+  font-weight: bold;
+}
+header #navVenue a {
+  color: white;
+  font-weight: 400;
+}
+header #navVenue #buyTickets {
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  border: 2px solid white;
+}
+header #navVenue #buyTickets:hover {
+  color: white;
+  background-color: red;
+  border-radius: 7px;
+}
+header #navVenue #navTicketsIcon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+#navVenue.scrolled {
+  background: black;
+  border-bottom: none;
+  transition: 0.5s ease-in-out;
+}
+#navVenue.scrolled #navTicketsIcon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+#navVenue.scrolled .navbar-brand {
+  color: white;
+}
+#navVenue.scrolled a {
+  color: #959595;
+}
+#navVenue.scrolled li:nth-child(2) a {
+  font-weight: 400;
+  color: white;
+}
+
+#venueHeroImage {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/venue-1.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 75%;
+  display: flex;
+  padding: 0px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+#venueHeroImage:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+#venueHeroImage .VheroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+#venueHeroImage p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+#heroTextMain {
+  padding-top: 150px;
+  padding-bottom: 150px;
+}
+
+.overview h2 {
+  font-family: "Yellowtail", cursive;
+  font-size: 4em;
+  padding: 15px;
+}
+
+#venueHeroImage2 {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/venue-2.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 75%;
+  display: flex;
+  padding: 0px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+#venueHeroImage2:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+#venueHeroImage2 .VheroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+#venueHeroImage2 p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+#venueHeroImage2 ul {
+  color: white;
+  list-style: none;
+  line-height: 2em;
+  padding: 0px;
+}
+#venueHeroImage2 #penthouseHeading {
+  padding: 0px;
+  margin: 0px;
+  line-height: 2em;
+  font-weight: bold;
+}
+#venueHeroImage2 .inquiryButton {
+  padding: 10px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: regular;
+  background: transparent;
+  border: 1px solid white;
+  transition: 0.3s ease-in-out;
+}
+#venueHeroImage2 .inquiryButton:hover {
+  border: 1px solid white;
+  background-color: rgba(13, 13, 13, 0.1647058824);
+}
+
+#heroTextMain2 {
+  padding-top: 150px;
+  padding-bottom: 150px;
+}
+
+.venueGridSection {
+  background: black;
+  padding: 0px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+  transition: 0.3s ease-in-out;
+}
+.venueGridSection:hover {
+  filter: grayscale(0);
+  -webkit-filter: grayscale(0);
+}
+.venueGridSection .inquiryButton {
+  padding: 10px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: regular;
+  background: transparent;
+  border: 1px solid white;
+  transition: 0.3s ease-in-out;
+}
+.venueGridSection .inquiryButton:hover {
+  border: 1px solid white;
+  background-color: rgba(250, 250, 250, 0.2039215686);
+}
+
+#heroText3 {
+  font-family: "Montserrat", sans-serif;
+  font-family: "Yellowtail", cursive;
+  padding: 0px;
+  padding-bottom: 20px;
+  font-size: 5em;
+  color: white;
+}
+
+.venueGridItem {
+  border-radius: 5px;
+}
+.venueGridItem img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  transition: 2s ease-in-out;
+}
+.venueGridItem img:hover {
+  transform: scale(1.1);
+}
+
+.venueGridCaptions {
+  padding: 0px;
+}
+.venueGridCaptions h5 {
+  font-weight: bold;
+  font-size: 1em;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0px;
+}
+
+.venueGridList {
+  text-align: center;
+  padding-top: 10px;
+}
+.venueGridList ul {
+  color: white;
+  list-style: none;
+  line-height: 2em;
+  padding: 0px;
+}
+
+.venueGridSection2 {
+  background: white;
+  padding: 0px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  filter: grayscale(1);
+  -webkit-filter: grayscale(1);
+  transition: 0.3s ease-in-out;
+}
+.venueGridSection2:hover {
+  filter: grayscale(0);
+  -webkit-filter: grayscale(0);
+}
+.venueGridSection2 .inquiryButton2 {
+  padding: 10px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: regular;
+  background: transparent;
+  border: 1px solid white;
+  transition: 0.3s ease-in-out;
+  color: black;
+  border: 1px solid black;
+}
+.venueGridSection2 .inquiryButton2:hover {
+  border: 1px solid black;
+  color: black;
+  background-color: rgba(0, 0, 0, 0.0470588235);
+}
+.venueGridSection2 .memberButton {
+  padding: 10px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: regular;
+  background: transparent;
+  border: 1px solid white;
+  transition: 0.3s ease-in-out;
+  color: white;
+  background: black;
+  border: 1px solid black;
+}
+.venueGridSection2 .memberButton:hover {
+  border: 1px solid black;
+  color: white;
+  background-color: rgba(34, 34, 34, 0.8862745098);
+}
+
+.venueGridItem2 {
+  border-radius: 5px;
+}
+.venueGridItem2 img {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  transition: 2s ease-in-out;
+}
+.venueGridItem2 img:hover {
+  transform: scale(1.1);
+}
+
+.venueGridList2 {
+  text-align: center;
+  padding-top: 10px;
+}
+.venueGridList2 ul {
+  color: black;
+  list-style: none;
+  line-height: 2em;
+  padding: 0px;
+}
+
+#heroText4 {
+  color: black;
+  font-family: "Montserrat", sans-serif;
+  font-family: "Yellowtail", cursive;
+  padding: 0px;
+  padding-bottom: 20px;
+  font-size: 5em;
+}
+
+.venueHeroImage3 {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/form-bg.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+  display: flex;
+  padding: 0px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+.venueHeroImage3:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+.venueHeroImage3 .VheroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+.venueHeroImage3 p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+.formSection {
+  color: white;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.formSection .formDate {
+  padding-left: 10px;
+}
+.formSection .formDateCont div:nth-child(2)::after {
+  content: "MM";
+  color: #d4d4d4;
+  font-size: 0.8em;
+}
+.formSection .formDateCont div:nth-child(3)::after {
+  content: "DD";
+  color: #d4d4d4;
+  font-size: 0.8em;
+}
+.formSection .formDateCont div:nth-child(4)::after {
+  content: "YYYY";
+  color: #d4d4d4;
+  font-size: 0.8em;
+}
+.formSection span {
+  color: red;
+}
+.formSection label {
+  margin: 0px;
+  font-size: 1em;
+  padding: 15px;
+  padding-left: 0px;
+}
+.formSection input {
+  background: rgba(255, 255, 255, 0.1843137255);
+  border: 1.5px solid white;
+  border: 1px solid white;
+  color: white;
+}
+.formSection input:focus {
+  color: white;
+  background: rgba(255, 255, 255, 0.3098039216);
+  border: 1px solid white;
+  box-shadow: 5px 6px 5px -5px rgba(253, 253, 253, 0.7490196078);
+  -webkit-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+  -moz-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+}
+.formSection input[type=number] {
+  -moz-appearance: textfield;
+}
+.formSection input::-webkit-outer-spin-button,
+.formSection input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0px;
+}
+.formSection input::-moz-placeholder {
+  color: #edecec;
+  font-family: "Montserrat", sans-serif;
+}
+.formSection input::placeholder {
+  color: #edecec;
+  font-family: "Montserrat", sans-serif;
+}
+.formSection textarea::-moz-placeholder {
+  color: #edecec;
+  font-family: "Montserrat", sans-serif;
+}
+.formSection textarea::placeholder {
+  color: #edecec;
+  font-family: "Montserrat", sans-serif;
+}
+.formSection select {
+  background: rgba(255, 255, 255, 0.1843137255);
+  border: 1.5px solid white;
+  border: 1px solid white;
+  color: white;
+}
+.formSection select:focus {
+  background: rgba(255, 255, 255, 0.3098039216);
+  border: 1px solid white;
+  box-shadow: 5px 6px 5px -5px rgba(253, 253, 253, 0.7490196078);
+  -webkit-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+  -moz-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+}
+.formSection .formLong {
+  background: rgba(255, 255, 255, 0.1843137255);
+  border: 1.5px solid white;
+  color: white;
+  padding-bottom: 10px;
+  height: 30px;
+  max-height: 150px;
+}
+.formSection .formLong:focus {
+  color: white;
+  background: rgba(255, 255, 255, 0.3098039216);
+  border: 1px solid white;
+  box-shadow: 5px 6px 5px -5px rgba(253, 253, 253, 0.7490196078);
+  -webkit-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+  -moz-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+}
+.formSection .formSec2 {
+  border-top: 1px solid rgba(255, 255, 255, 0.1960784314);
+}
+
+.formSection .VformButton {
+  padding: 10px;
+  margin-top: 20px;
+  box-sizing: border-box;
+  font-family: "Montserrat", sans-serif;
+  font-weight: regular;
+  background: transparent;
+  border: 1px solid white;
+  transition: 0.3s ease-in-out;
+  padding: 10px;
+  font-size: 1em;
+  font-weight: regular;
+  transition: 0.3s ease-in-out;
+}
+.formSection .VformButton:hover {
+  background-color: rgba(255, 255, 255, 0.3098039216);
+  border: 1px solid white;
+  box-shadow: 5px 6px 5px -5px rgba(253, 253, 253, 0.7490196078);
+  -webkit-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+  -moz-box-shadow: 5px 6px 5px -5px rgba(255, 255, 255, 0.7490196078);
+}
+
+#formCont {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+@media screen and (max-width: 768px) {
+  #venueHeroImage, #venueHeroImage2, .venueHeroImage3 {
+    filter: grayscale(0);
+    -webkit-filter: grayscale(0);
+  }
+  .venueGridSection, .venueGridSection2 {
+    filter: grayscale(0);
+    -webkit-filter: grayscale(0);
+  }
+  #venueHeroImage {
+    height: 100%;
+  }
+  #venueHeroImage2 {
+    height: 100%;
+  }
+  .venueHeroImage3 {
+    height: 100%;
+  }
+  #heroTextMain {
+    padding-top: 100px;
+    padding-bottom: 50px;
+  }
+  #heroTextMain2 {
+    padding-top: 100px;
+    padding-bottom: 50px;
+  }
+  #formCont {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .overview {
+    font-size: 0.9em;
+  }
+  #heroTextMain2 #heroText2 {
+    font-size: 3.5em;
+  }
+  #heroText3, #heroText4, #heroText5 {
+    font-size: 3em;
+  }
+}
+@media screen and (max-width: 500px) {
+  #heroTextMain #heroText {
+    font-size: 3em;
+  }
+  #heroTextMain p {
+    padding: 0px;
+    padding-top: 10px;
+    font-size: 0.9em;
+  }
+  #heroTextMain2 #heroText2 {
+    font-size: 2.5em;
+  }
+  #heroTextMain2 p {
+    padding: 0px;
+    padding-top: 10px;
+    font-size: 0.9em;
+  }
+  #heroTextMain2 ul {
+    padding: 0px;
+    padding-top: 10px;
+    font-size: 0.9em;
+  }
+  #heroTextMain2 a {
+    font-size: 0.9em;
+  }
+  .overview {
+    font-size: 0.7em;
+  }
+  #heroText3, #heroText4, #heroText5 {
+    font-size: 2em;
+  }
+  .venueGridItem {
+    font-size: 0.8em;
+  }
+  .venueGridList {
+    font-size: 0.9em;
+  }
+  .venueGridCont .inquiryButton {
+    font-size: 0.9em;
+  }
+  .venueGridItem2 {
+    font-size: 0.8em;
+  }
+  .venueGridList2 {
+    font-size: 0.9em;
+  }
+  .venueGridCont2 .inquiryButton2 {
+    font-size: 0.9em;
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+  .venueGridCont2 .memberButton {
+    font-size: 0.9em;
+  }
+  #formCont label {
+    font-size: 0.9em;
+  }
+}
+header #navAbout {
+  background: transparent;
+  border-bottom: 1px solid black;
+}
+header #navAbout li:nth-child(3) a {
+  font-weight: bold;
+}
+header #navAbout a {
+  color: black;
+  font-weight: 400;
+}
+header #navAbout #buyTickets {
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  border: 2px solid white;
+}
+header #navAbout #buyTickets:hover {
+  color: white;
+  background-color: red;
+  border-radius: 7px;
+}
+
+#navAbout.scrolled {
+  background: black;
+  transition: 0.5s ease-in-out;
+}
+#navAbout.scrolled #navTicketsIcon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+#navAbout.scrolled .navbar-brand {
+  color: white;
+}
+#navAbout.scrolled a {
+  color: #959595;
+}
+#navAbout.scrolled li:nth-child(3) a {
+  font-weight: 400;
+  color: white;
+}
+
+#aboutHText {
+  padding-top: 5rem;
+}
+#aboutHText #aboutHHero {
+  font-family: "Yellowtail", cursive;
+  font-size: 4em;
+}
+#aboutHText #aboutHPara {
+  font-family: "Montserrat", sans-serif;
+  color: black;
+  text-align: left;
+  font-weight: 400;
+  font-size: 1em;
+}
+#aboutHText #aboutHAlert {
+  border-radius: 15px;
+  background-color: black;
+  color: white;
+}
+
+#aboutHeroImage {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/about-1.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+#aboutHeroImage:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+#aboutHeroImage .heroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+#aboutHeroImage p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+.aboutDesc {
+  font-family: "Montserrat", sans-serif;
+  text-align: left;
+  font-size: 1em;
+  color: black;
+  font-weight: 400;
+  margin: 20px 0px;
+}
+
+#aboutHeroImage2 {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/about-2.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+#aboutHeroImage2:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+#aboutHeroImage2 .heroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+#aboutHeroImage2 p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+
+.accessibilitySection h3, .accessibilitySection h4 {
+  font-family: "Yellowtail", cursive;
+  font-size: 3em;
+  color: black;
+  text-align: center;
+  margin: 20px 0px;
+}
+.accessibilitySection h4 {
+  text-align: left;
+  font-size: 2em;
+}
+.accessibilitySection p {
+  color: black;
+  font-size: 1em;
+}
+.accessibilitySection #accButton {
+  color: black;
+  font-size: 1.3em;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-bottom: 10px;
+  letter-spacing: 0.1em;
+  transition: 0.2s ease-in-out;
+}
+.accessibilitySection #accButton:hover {
+  background-color: transparent;
+  color: red;
+  transform: translateX(5px);
+}
+
+#aboutHeroImage3 {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/about-3.jpg");
+  filter: grayscale(1);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 75vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+#aboutHeroImage3:hover {
+  filter: grayscale(0);
+  webkit-filter: grayscale(0);
+}
+#aboutHeroImage3 .heroText {
+  font-family: "Yellowtail", cursive;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+}
+#aboutHeroImage3 p {
+  padding: 20px;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1em;
+  color: white;
+  font-weight: 400;
+  flex-direction: column;
+}
+#aboutHeroImage3 #visitButton {
+  link-style: none;
+  text-decoration: none;
+  font-family: "Montserrat", sans-serif;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5em;
+  background-color: transparent;
+  padding: 15px;
+  margin-top: 30px;
+  border: 1.5px solid white;
+  border-radius: 10px;
+  transition: 0.2s ease-in-out;
+  text-decoration: none;
+}
+#aboutHeroImage3 #visitButton:hover {
+  color: black;
+  background-color: white;
+  border-radius: 7px;
+}
+#aboutHeroImage3 #visitButton span {
+  font-family: "Yellowtail", cursive;
+  font-weight: 300;
+  font-size: 1.1em;
+}
+
+#sponsorSection {
+  max-width: 65vw;
+  min-width: 45vw;
+}
+#sponsorSection h3 {
+  margin: 20px 0px;
+  font-family: "Yellowtail", cursive;
+  font-family: "Yellowtail", cursive;
+  font-size: 3em;
+  color: black;
+  text-align: center;
+}
+#sponsorSection div {
+  align-items: center;
+  justify-content: center;
+}
+#sponsorSection .sponsorImages {
+  padding: 0px 50px 0px 0px;
+  transition: 0.2s;
+}
+#sponsorSection .sponsorImages:hover {
+  transform: scale(1.1);
+}
+#sponsorSection .sponsorRow {
+  padding-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  #aboutHeroImage, #aboutHeroImage2, #aboutHeroImage3 {
+    filter: grayscale(0);
+    webkit-filter: grayscale(0);
+    font-size: 0.9em;
+  }
+  #aboutHText #aboutHHero {
+    font-size: 3em;
+  }
+  #aboutHText #aboutHPara {
+    font-size: 1em;
+  }
+  #heroText {
+    font-size: 2em;
+  }
+  #sponsorSection h3 {
+    font-size: 2em;
+  }
+  #sponsorSection .sponsorImages {
+    transform: scale(1.1);
+    padding-right: 15px;
+    padding-top: 15px;
+  }
+  #sponsorSection .sponsorImages:nth-child(even) {
+    padding-right: 0px;
+    padding-left: 15px;
+  }
+}
+@media screen and (max-width: 500px) {
+  #aboutHeroImage, #aboutHeroImage2, #aboutHeroImage3 {
+    font-size: 1em;
+  }
+  #aboutHText #aboutHHero {
+    font-size: 3em;
+  }
+  #aboutHText #aboutHPara {
+    font-size: 1em;
+  }
+  #heroText {
+    font-size: 1.5em;
+  }
+  #sponsorSection h3 {
+    font-size: 1.5em;
+  }
+  #sponsorSection .sponsorImages {
+    transform: scale(1.1);
+    padding-right: 15px;
+    padding-top: 15px;
+  }
+  #sponsorSection .sponsorImages:nth-child(even) {
+    padding-right: 0px;
+    padding-left: 15px;
+  }
+  #aboutHeroImage {
+    font-size: 0.6em;
+  }
+  #aboutHeroImage2 {
+    font-size: 0.9em;
+  }
+  #aboutHeroImage2 #heroTextMain2 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  #aboutHeroImage2 #heroTextMain2 span {
+    font-size: 2em;
+    justify-content: center;
+    align-items: center;
+  }
+  .accessibilitySection #accButton {
+    font-size: 1em;
+    display: block;
+    padding: 10px;
+    border: 1px solid black;
+    margin: 10px;
+  }
+  .accessibilitySection #accButton span {
+    display: none;
+  }
+  .accessibilitySection #accButton:hover {
+    background-color: black;
+    color: white;
+    transform: translateX(0px);
+  }
+  #aboutHeroImage3 {
+    font-size: 1em;
+  }
+  #aboutHeroImage3 #heroTextMain3 span {
+    font-size: 3em;
+  }
+  #aboutHeroImage3 #heroTextMain3 #visitButton {
+    font-size: 1em;
+  }
+  #aboutHeroImage3 #heroTextMain3 #visitButton span {
+    font-size: 1.3em;
+  }
+  #sponsorSection h3 {
+    font-size: 2.5em;
+  }
+  #sponsorSection .sponsorImages {
+    padding: 20px 30px 0px 0px;
+  }
+  #sponsorSection .sponsorRow {
+    padding-bottom: 20px;
+  }
+}
+* {
+  font-family: "Montserrat", sans-serif;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navGlobal.scrolled {
+  background: black;
+  transition: 0.5s ease-in-out;
+  border-bottom: none;
+}
+
+.navGlobal {
+  background: transparent;
+  border-bottom: 1px solid white;
+}
+.navGlobal .navbar-brand {
+  font-family: "Yellowtail", cursive;
+  font-size: 1.5em;
+  padding: 0px;
+}
+.navGlobal .nav-item {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
+.navGlobal #buyTickets {
+  color: white;
+  font-weight: bold;
+  background-color: black;
+  border: 2px solid white;
+}
+.navGlobal #buyTickets:hover {
+  color: white;
+  background-color: red;
+  border-radius: 7px;
+}
+
+#heroImage {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("images/image2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+}
+#heroImage .heroText {
+  font-family: "Cinzel", serif;
+  font-size: 5em;
+  color: white;
+  display: flex;
+  height: 65vh;
+  justify-content: center;
+  align-items: center;
+}
+#heroImage .heroPara {
+  color: white;
+}
+
+#featuredCars {
+  padding: 50px;
+  padding-top: 15px;
+}
+#featuredCars .display-5 {
+  font-family: "Yellowtail", cursive;
+  font-size: 3em;
+  font-weight: 400;
+}
+#featuredCars h5 {
+  font-weight: 800;
+}
+#featuredCars .img-thumbnail {
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+#featuredCars .featuredCarsPara {
+  filter: grayscale(100%);
+  transition: 0.2s ease-in-out;
+  font-size: 0.8em;
+  font-weight: 400;
+}
+#featuredCars .featuredCarsPara:hover {
+  filter: grayscale(0%);
+}
+
+.callToAction {
+  background-color: black;
+  color: white;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  font-size: 0.9em;
+}
+.callToAction .display-5 {
+  font-family: "Yellowtail", cursive;
+  font-size: 3em;
+  font-weight: 400;
+}
+.callToAction .headingsCTA {
+  color: white;
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  font-family: "Yellowtail", cursive;
+  font-size: 2.5em;
+  font-weight: 400;
+  border-bottom: 0.5px solid rgba(84, 84, 84, 0.4901960784);
+}
+.callToAction .buttonsCTA {
+  color: white;
+  font-size: 1.3em;
+  font-weight: bold;
+  background-color: transparent;
+  border: none;
+  padding-top: 15px;
+  padding-left: 0px;
+  letter-spacing: 0.1em;
+  transition: 0.2s ease-in-out;
+}
+.callToAction .buttonsCTA:hover {
+  background-color: transparent;
+  color: red;
+  transform: translateX(5px);
+}
+.callToAction #upcomingEventsCarousel {
+  filter: grayscale(100%);
+  transition: 0.2s ease-in-out;
+}
+.callToAction #upcomingEventsCarousel:hover {
+  filter: grayscale(0%);
+}
+.callToAction #upcomingEventsCarousel img {
+  border-radius: 4px;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 {
+  position: absolute;
+  top: 80px;
+  color: black;
+  font-size: 0.8em;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 h5 {
+  font-size: 4em;
+  font-weight: 800;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 p {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 #dateStamp {
+  font-size: 1.1em;
+  font-weight: 400;
+  padding-bottom: 20px;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 .carouselButton {
+  padding: 10px 20px;
+  color: black;
+  font-weight: bold;
+  background-color: transparent;
+  border: 1px solid black;
+  transition: 0.2s ease-in-out;
+}
+.callToAction #upcomingEventsCarousel #cCaption1 .carouselButton:hover {
+  color: white;
+  background-color: black;
+  border-radius: 7px;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 {
+  position: absolute;
+  color: white;
+  font-size: 0.8em;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 h5 {
+  font-size: 4em;
+  font-weight: 800;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 p {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 #dateStamp {
+  font-size: 1.1em;
+  font-weight: 400;
+  padding-bottom: 20px;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 .carouselButton {
+  padding: 10px 20px;
+  color: black;
+  font-weight: bold;
+  background-color: transparent;
+  border: 1px solid black;
+  transition: 0.2s ease-in-out;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 .carouselButton:hover {
+  color: white;
+  background-color: black;
+  border-radius: 7px;
+}
+.callToAction #upcomingEventsCarousel #cCaption2 .carouselButton {
+  color: white;
+  border: 1px solid white;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 {
+  position: absolute;
+  color: white;
+  font-size: 0.8em;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 h5 {
+  font-size: 4em;
+  font-weight: 800;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 p {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 #dateStamp {
+  font-size: 1.1em;
+  font-weight: 400;
+  padding-bottom: 20px;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 .carouselButton {
+  padding: 10px 20px;
+  color: black;
+  font-weight: bold;
+  background-color: transparent;
+  border: 1px solid black;
+  transition: 0.2s ease-in-out;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 .carouselButton:hover {
+  color: white;
+  background-color: black;
+  border-radius: 7px;
+}
+.callToAction #upcomingEventsCarousel #cCaption3 .carouselButton {
+  color: white;
+  border: 1px solid white;
+}
+.callToAction #upcomingEventsCarousel #cNavBtnNext {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3e%3c/svg%3e");
+}
+.callToAction #upcomingEventsCarousel #cNavBtnPrev {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23ffffff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5L4.25 4l2.5-2.5L5.25 0z'/%3e%3c/svg%3e");
+}
+
+#formContainer {
+  width: 55%;
+  padding-top: 10px;
+}
+
+#formRequiredMark {
+  color: red;
+}
+
+#memberSection .display-5 {
+  font-family: "Yellowtail", cursive;
+  font-size: 3em;
+  font-weight: 400;
+}
+#memberSection form {
+  font: "Montserrat", sans-serif;
+  color: black;
+}
+#memberSection button {
+  color: white;
+  font-weight: bold;
+  font-size: 0.9em;
+  background-color: black;
+  border: 2px solid white;
+}
+#memberSection button:hover {
+  color: white;
+  background-color: red;
+  border-radius: 7px;
+}
+#memberSection #checkBoxText {
+  font-size: 0.8em;
+  font-weight: 400;
+  padding-top: 5px;
+}
+#memberSection #checkBoxText a {
+  color: black;
+  text-decoration: none;
+  font-style: italic;
+}
+#memberSection #checkBoxText a:hover {
+  color: red;
+}
+#memberSection .form-check-input {
+  background-color: black;
+  font-size: 0.9em;
+}
+#memberSection #emailHelp {
+  font-size: 0.7em;
+}
+#memberSection .form-control {
+  border: 1px solid black;
+  border-radius: 0px;
+  font-size: 0.9em;
+  font-weight: 400;
+  border-radius: 3px;
+}
+#memberSection .form-control:focus {
+  border: 1px solid black;
+  box-shadow: 5px 6px 5px -5px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 5px 6px 5px -5px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 5px 6px 5px -5px rgba(0, 0, 0, 0.75);
+}
+#memberSection .form-label {
+  font-size: 0.9em;
+  font-weight: bold;
+}
+#memberSection #formPara {
+  font-size: 0.9em;
+  color: black;
+}
+
+footer {
+  background-color: black;
+  color: white;
+  text-decoration: none;
+}
+footer a {
+  color: black;
+  text-decoration: none;
+  font-style: italic;
+  color: white;
+}
+footer a:hover {
+  color: red;
+}
+
+#footerNav {
+  border-right: 0.5px solid rgba(84, 84, 84, 0.4901960784);
+}
+
+#footerNav ul {
+  list-style: none;
+}
+#footerNav ul li a {
+  font-size: 0.9em;
+  font-style: normal;
+  line-height: 2;
+}
+
+#footerNav h5 {
+  padding-top: 15px;
+}
+
+#footerNavHeading {
+  font-size: 1.1em;
+  font-weight: bold;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 0px;
+}
+
+#footerMainNav {
+  padding-bottom: 0px;
+  border-bottom: 0.5px solid rgba(84, 84, 84, 0.4901960784);
+}
+
+#footerLogo {
+  padding-bottom: 25px;
+}
+#footerLogo h2 {
+  font-family: "Yellowtail", cursive;
+  font-size: 4.5em;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+#footerLogo #address {
+  font-size: 0.9em;
+  color: #a9a9a9;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+#footerLogo #contact {
+  font-size: 0.9em;
+  font-weight: 400;
+}
+#footerLogo #socials a {
+  padding-right: 10px;
+  padding-left: 10px;
+  transition: 0.1s ease-in-out;
+}
+
+#copyrightMsg {
+  font-size: 0.7em;
+  font-weight: 400;
+  margin-bottom: 0px;
+  padding-bottom: 5px;
+}
+
+#endingNote {
+  padding-top: 0px;
+  margin-bottom: 0px;
+  font-size: 0.7em;
+  font-weight: 400;
+}
+
+@media screen and (max-width: 768px) {
+  #featuredCars {
+    padding: 100px;
+    padding-top: 15px;
+  }
+  #featuredCars .featuredCarsPara {
+    filter: grayscale(0%);
+    padding-bottom: 15px;
+  }
+  #heroImage {
+    max-height: 35vh;
+  }
+  #heroImage .heroText {
+    font-family: "Montserrat", sans-serif;
+    font-size: 5em;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30vh;
+    font-family: "Yellowtail", cursive;
+  }
+  .callToAction .headingsCTA {
+    font-size: 2.5em;
+  }
+  .callToAction .sectionCTA {
+    font-size: 0.9em;
+  }
+  #upcomingEvents {
+    font-size: 2.5em;
+  }
+  #upcomingEventsSection #upcomingEventsCarousel {
+    filter: grayscale(0%);
+  }
+  #upcomingEventsCarousel #carouselExampleCaptions > .carousel-inner {
+    font-size: 0.4em;
+  }
+  #upcomingEventsCarousel #carouselExampleCaptions > .carousel-inner .caoursel-item {
+    color: white;
+  }
+  #upcomingEventsCarousel #carouselExampleCaptions > .carousel-inner p {
+    display: none;
+  }
+  #upcomingEventsCarousel #carouselExampleCaptions > .carousel-inner a {
+    font-size: 3em;
+  }
+  #memberSection {
+    font-size: 0.9em;
+  }
+  #memberSection .display-5 {
+    font-size: 3em;
+  }
+  #footerMainNav #footerNav {
+    border-right: none;
+    border-bottom: 0.5px solid rgba(84, 84, 84, 0.4901960784);
+  }
+  #footerMainNav #socials {
+    padding-bottom: 25px;
+  }
+}
+@media screen and (max-width: 500px) {
+  #featuredCars {
+    padding: 40px;
+    padding-top: 15px;
+  }
+  #featuredCars .display-5 {
+    font-size: 1.8em;
+    font-weight: 400;
+    padding-bottom: 0px;
+  }
+  #featuredCars .featuredThumbs {
+    filter: grayscale(0%);
+  }
+  #featuredCars .featuredCarsPara {
+    font-size: 0.8em;
+    padding-bottom: 15px;
+  }
+  #heroImage {
+    max-height: 25vh;
+  }
+  #heroImage .heroText {
+    font-size: 2.2em;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Yellowtail", cursive;
+  }
+  #carouselExampleCaptions {
+    font-size: 0.7em;
+  }
+  #carouselExampleCaptions button {
+    display: none;
+  }
+  #carouselExampleCaptions .caoursel-item {
+    color: white;
+  }
+  #carouselExampleCaptions p {
+    display: none;
+  }
+  #carouselExampleCaptions a {
+    font-size: 1.9em !important;
+  }
+  #carouselExampleCaptions #cCaption1 {
+    top: 0px !important;
+  }
+  #upcomingEvents {
+    font-size: 2.2em;
+  }
+  .callToAction .headingCTA {
+    font-size: 1.5em;
+  }
+  .callToAction .sectionCTA {
+    font-size: 0.9em;
+  }
+  #memberSection .display-5 {
+    font-size: 2.2em;
+  }
+  #memberSection form {
+    font-size: 1em;
+  }
+  #formContainer {
+    width: 100%;
+    padding-top: 0px;
+  }
+  #formPara {
+    font-size: 0.9em;
+    color: black;
+  }
+  #footerMainNav #footerNav {
+    border-right: none;
+    border-bottom: 0.5px solid rgba(84, 84, 84, 0.4901960784);
+  }
+  #footerMainNav #footerNav #socials {
+    padding-bottom: 25px;
+  }
+  #footerMainNav #footerNav #footerNavHeading {
+    font-size: 1em;
+  }
+  #footerMainNav #footerNav #footerNav ul li a {
+    font-size: 0.8em;
+  }
+  #footerLogo #footerLogoText {
+    font-size: 3em;
+  }
+  #footerLogo #address {
+    font-size: 0.8em;
+  }
+  #footerLogo #contact {
+    font-size: 0.8em;
+  }
+}/*# sourceMappingURL=styles.bundle.css.map */

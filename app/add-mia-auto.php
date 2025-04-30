@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('includes/config.php'); // Include config per $con e costanti
+include_once 'includes/config.php'; // Include config per $con e costanti
 
 // Verifica se l'utente è loggato
 if (strlen($_SESSION['id'] ?? 0) == 0) {
@@ -42,9 +42,7 @@ if ($id_socio_utente === null && empty($messaggio)) {
      $messaggio = "Devi essere registrato come socio per poter aggiungere auto.";
      $messaggio_tipo = 'warning';
 }
-
-// --- Funzione Helper per Processare Upload ---
-// (Identica a quella della spiegazione precedente)
+// --- Funzione per Processare File Caricati ---
 function process_uploaded_file($file_key, $allowed_mime_types, $allowed_extensions, $max_size, $upload_dir, $id_socio) {
     if (isset($_FILES[$file_key]) && $_FILES[$file_key]['error'] === UPLOAD_ERR_OK) {
         $file = $_FILES[$file_key];
@@ -52,27 +50,27 @@ function process_uploaded_file($file_key, $allowed_mime_types, $allowed_extensio
         $file_size = $file['size'];
 
         // 1. Controllo Dimensione
-        if ($file_size > $max_size) return ['error' => "Il file '$file_key' supera la dimensione massima consentita (2MB)."];
-        if ($file_size === 0) return ['error' => "Il file '$file_key' è vuoto."];
+        if ($file_size > $max_size) {return ['error' => "Il file '$file_key' supera la dimensione massima consentita (2MB)."];}
+        if ($file_size === 0) {return ['error' => "Il file '$file_key' è vuoto."];}
 
         // 2. Controllo Tipo MIME
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $tmp_name);
         finfo_close($finfo);
-        if (!in_array($mime_type, $allowed_mime_types)) return ['error' => "Il tipo di file '$file_key' ($mime_type) non è consentito (solo JPG, PNG, GIF, WEBP)."];
+        if (!in_array($mime_type, $allowed_mime_types)) {return ['error' => "Il tipo di file '$file_key' ($mime_type) non è consentito (solo JPG, PNG, GIF, WEBP)."];}
 
         // 3. Controllo Estensione
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        if (!in_array($extension, $allowed_extensions)) return ['error' => "L'estensione del file '$file_key' non è consentita."];
+        if (!in_array($extension, $allowed_extensions)) {return ['error' => "L'estensione del file '$file_key' non è consentita."];}
 
         // 4. Verifica se è un'immagine valida
-        if (@getimagesize($tmp_name) === false) return ['error' => "Il file '$file_key' non sembra essere un'immagine valida."];
+        if (@getimagesize($tmp_name) === false) {return ['error' => "Il file '$file_key' non sembra essere un'immagine valida."];}
 
         // 5. Genera Nome File Sicuro
         $safe_filename = sprintf('auto_%d_%s_%s.%s', $id_socio, time(), bin2hex(random_bytes(8)), $extension);
 
         // 6. Crea directory se non esiste
-        if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) return ['error' => "Impossibile creare la directory di upload."];
+        if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {return ['error' => "Impossibile creare la directory di upload."];}
         if (!is_writable($upload_dir)) {
             error_log("La directory di upload non è scrivibile: " . $upload_dir);
             return ['error' => "Errore interno del server (permessi directory upload)."];
@@ -118,9 +116,9 @@ if (isset($_POST['submit']) && $id_socio_utente !== null) {
     $uploaded_files_to_delete_on_error = []; // Per cleanup
 
     // --- Validazione Input (come prima) ---
-    if (empty($marca)) $errori_form['marca'] = "La marca è obbligatoria.";
-    if (empty($modello)) $errori_form['modello'] = "Il modello è obbligatorio.";
-    if (empty($targa)) $errori_form['targa'] = "La targa è obbligatoria.";
+    if (empty($marca)) {$errori_form['marca'] = "La marca è obbligatoria.";}
+    if (empty($modello)) {$errori_form['modello'] = "Il modello è obbligatorio.";}
+    if (empty($targa)) {$errori_form['targa'] = "La targa è obbligatoria.";}
     // ... (altre validazioni come prima: telaio, cilindrata, anno) ...
     if (!empty($numero_telaio)) {
         $stmt_check_telaio = mysqli_prepare($con, "SELECT id FROM auto WHERE numero_telaio = ?");
@@ -217,7 +215,7 @@ if (isset($_POST['submit']) && $id_socio_utente !== null) {
                 $messaggio = "Errore durante l'inserimento dell'auto nel database.";
                 $messaggio_tipo = 'danger';
                 error_log("User Add Mia Auto Execute Error: " . mysqli_stmt_error($stmt_insert));
-                 if (isset($stmt_insert) && $stmt_insert) mysqli_stmt_close($stmt_insert); // Chiudi se ancora aperto
+                 if (isset($stmt_insert) && $stmt_insert) {mysqli_stmt_close($stmt_insert);} // Chiudi se ancora aperto
             }
         } else {
             // Errore preparazione: Cancella i file eventualmente caricati!
@@ -264,9 +262,9 @@ mysqli_close($con);
         </style>
     </head>
     <body class="sb-nav-fixed">
-      <?php include_once('includes/navbar.php');?>
+      <?php include_once'includes/navbar.php';?>
         <div id="layoutSidenav">
-         <?php include_once('includes/sidebar.php');?>
+         <?php include_once'includes/sidebar.php';?>
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
@@ -427,7 +425,7 @@ mysqli_close($con);
                         <?php endif; // Fine controllo $id_socio_utente ?>
                     </div>
                 </main>
-                <?php include('includes/footer.php');?>
+                <?php include 'includes/footer.php';?>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
