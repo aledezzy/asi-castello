@@ -1,5 +1,13 @@
 <?php session_start();
 include_once 'includes/config.php';
+
+
+if (!isset($_SESSION['id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+
 if (strlen($_SESSION['id']==0)) {
   header('location:logout.php');
   } else{

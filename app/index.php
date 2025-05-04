@@ -47,6 +47,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="pages\about.html">Chi siamo</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manifestazioni.php">Eventi</a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav nav-right ms-auto">
                         <li class="nav-item mx-auto">

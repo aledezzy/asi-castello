@@ -29,12 +29,12 @@ if ($stmt_user) {
         $messaggio = "Risulti già registrato come socio.";
         $messaggio_tipo = 'info';
     } elseif (!$user_data) {
-         $messaggio = "Errore nel recupero dei dati utente.";
+         $messaggio = "Errore nel recupero dei dati utente. Effettuare il login.";
          $messaggio_tipo = 'danger';
          error_log("Diventa Socio - Fetch User Error: User ID {$id_utente_loggato} not found?");
     }
 } else {
-    $messaggio = "Errore nel recupero informazioni utente.";
+    $messaggio = "Errore nel recupero informazioni utente. Effettuare il login.";
     $messaggio_tipo = 'danger';
     error_log("Diventa Socio - Fetch User Prepare Error: " . mysqli_error($con));
 }

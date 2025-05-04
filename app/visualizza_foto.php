@@ -1,12 +1,11 @@
 <?php
 // visualizza_foto.php
-session_start(); 
 
 define('UPLOAD_DIR', 'uploads/auto_foto/'); 
 
 
 $filename = filter_input(INPUT_GET, 'file'); 
--
+
 
 $filename_cleaned = basename(str_replace('..', '', $filename ?? ''));
 
@@ -67,4 +66,3 @@ if (file_exists($filepath) && is_readable($filepath)) {
     echo "Immagine non trovata.";
     exit;
 }
-?>

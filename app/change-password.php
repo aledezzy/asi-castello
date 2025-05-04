@@ -1,9 +1,16 @@
 <?php session_start();
-include_once('includes/config.php'); // Assicurati che config.php definisca le costanti RECAPTCHA
+include_once 'includes/config.php'; // Assicurati che config.php definisca le costanti RECAPTCHA
 // Includi PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
+
+if (!isset($_SESSION['id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+
 
 if (strlen($_SESSION['id'] ?? 0) == 0) {
   header('location:logout.php');
