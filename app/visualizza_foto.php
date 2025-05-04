@@ -1,10 +1,10 @@
 <?php
 // visualizza_foto.php
 
-define('UPLOAD_DIR', 'uploads/auto_foto/'); 
+define('UPLOAD_DIR', 'uploads/auto_foto/');
 
 
-$filename = filter_input(INPUT_GET, 'file'); 
+$filename = filter_input(INPUT_GET, 'file');
 
 
 $filename_cleaned = basename(str_replace('..', '', $filename ?? ''));
@@ -15,7 +15,7 @@ if (!$filename || $filename !== $filename_cleaned || empty($filename_cleaned)) {
     exit;
 }
 // --- Fine Validazione Nome File ---
-$filepath = UPLOAD_DIR . $filename_cleaned; 
+$filepath = UPLOAD_DIR . $filename_cleaned;
 
 
 if (file_exists($filepath) && is_readable($filepath)) {
