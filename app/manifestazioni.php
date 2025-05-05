@@ -294,6 +294,18 @@ if($stmt_mie) {
     error_log("Errore preparazione query mie iscrizioni confermate: " . mysqli_error($con));
 }
 
+// --- Recupero Date Manifestazioni per Calendario ---
+$event_dates = [];
+$sql_event_dates = "SELECT DISTINCT DATE(data_inizio) as event_date FROM manifestazioni ORDER BY event_date ASC";
+$result_event_dates = mysqli_query($con, $sql_event_dates);
+if ($result_event_dates) {
+    while ($row_date = mysqli_fetch_assoc($result_event_dates)) {
+        $event_dates[] = $row_date['event_date']; // Formato YYYY-MM-DD
+    }
+    mysqli_free_result($result_event_dates);
+} else {
+    error_log("Errore query date manifestazioni per calendario: " . mysqli_error($con));
+}
 
 mysqli_close($con);
 ?>
@@ -324,6 +336,28 @@ mysqli_close($con);
         .mie-iscrizioni h2 { margin-bottom: 15px; }
         .dettagli-iscrizione span { display: inline-block; margin-right: 15px; font-size: 0.9em; }
         .auto-socio-select { margin-bottom: 15px; }
+        /* Stili Calendario */
+        #event-calendar-container { margin-top: 40px; padding-top: 20px; border-top: 2px solid #eee; }
+        .calendar { width: 100%; max-width: 600px; margin: 1em auto; border: 1px solid #ccc; }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #f0f0f0; border-bottom: 1px solid #ccc; }
+        .calendar-header button { background: none; border: none; font-size: 1.2em; cursor: pointer; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background-color: #ccc; }
+        .calendar-day-header, .calendar-day { padding: 10px 5px; text-align: center; background-color: #fff; font-size: 0.9em; }
+        .calendar-day-header { font-weight: bold; background-color: #f8f9fa; }
+        .calendar-day.other-month { color: #aaa; background-color: #f8f9fa; }
+        .calendar-day.has-event { background-color: #d4edda; /* Verde chiaro */ font-weight: bold; position: relative; }
+        .calendar-day.has-event::after {
+            /* Optional: add a small dot */
+            /* content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: #155724;
+            border-radius: 50%; */
+        }
         .hidden { display: none; }
     </style>
 </head>
@@ -478,6 +512,25 @@ mysqli_close($con);
                         </div>
                     <?php endif; ?>
 
+                    <!-- === INIZIO SEZIONE CALENDARIO === -->
+                    <div id="event-calendar-container">
+                        <h2>Calendario Manifestazioni</h2>
+                        <div class="calendar">
+                            <div class="calendar-header">
+                                <button id="prev-month">&lt;</button>
+                                <span id="current-month-year"></span>
+                                <button id="next-month">&gt;</button>
+                            </div>
+                            <div class="calendar-grid" id="calendar-days-header">
+                                <!-- Header giorni settimana (generato da JS) -->
+                            </div>
+                            <div class="calendar-grid" id="calendar-body">
+                                <!-- Giorni del mese (generati da JS) -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- === FINE SEZIONE CALENDARIO === -->
+
                 </div>
             </main>
             <?php include 'includes/footer.php';?>
@@ -487,6 +540,10 @@ mysqli_close($con);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
     <script>
+        // Passa le date degli eventi a JavaScript
+        // Formato date atteso da JS: YYYY-MM-DD
+        const eventDates = <?php echo json_encode($event_dates); ?>;
+
         // Funzione JS compilaDatiAuto (invariata)
         function compilaDatiAuto(selectElement, idManifestazione) {
             const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -519,6 +576,80 @@ mysqli_close($con);
                 }
             });
         });
+
+        // === INIZIO SCRIPT CALENDARIO ===
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarBody = document.getElementById('calendar-body');
+            const calendarDaysHeader = document.getElementById('calendar-days-header');
+            const currentMonthYear = document.getElementById('current-month-year');
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+
+            let currentDate = new Date();
+
+            const monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno",
+                                "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+            const dayNames = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+
+            function renderCalendar(date) {
+                calendarBody.innerHTML = ''; // Pulisci calendario
+                calendarDaysHeader.innerHTML = ''; // Pulisci header giorni
+                const year = date.getFullYear();
+                const month = date.getMonth(); // 0-11
+
+                currentMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+                // Render header giorni settimana
+                dayNames.forEach(day => {
+                    const dayHeaderEl = document.createElement('div');
+                    dayHeaderEl.classList.add('calendar-day-header');
+                    dayHeaderEl.textContent = day;
+                    calendarDaysHeader.appendChild(dayHeaderEl);
+                });
+
+                const firstDayOfMonth = new Date(year, month, 1);
+                const lastDayOfMonth = new Date(year, month + 1, 0);
+                const daysInMonth = lastDayOfMonth.getDate();
+                const startDayOfWeek = firstDayOfMonth.getDay(); // 0=Domenica, 1=Lunedì...
+
+                // Aggiungi spazi vuoti per i giorni del mese precedente
+                for (let i = 0; i < startDayOfWeek; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.classList.add('calendar-day', 'other-month');
+                    calendarBody.appendChild(emptyCell);
+                }
+
+                // Render giorni del mese corrente
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.classList.add('calendar-day');
+                    dayCell.textContent = day;
+
+                    const currentDayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                    // Controlla se c'è un evento in questo giorno
+                    if (eventDates.includes(currentDayStr)) {
+                        dayCell.classList.add('has-event');
+                        dayCell.title = 'Manifestazione in questo giorno'; // Tooltip
+                    }
+
+                    calendarBody.appendChild(dayCell);
+                }
+            }
+
+            prevMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar(currentDate);
+            });
+
+            nextMonthBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar(currentDate);
+            });
+
+            renderCalendar(currentDate); // Render iniziale
+        });
+        // === FINE SCRIPT CALENDARIO ===
     </script>
 
 </body>
