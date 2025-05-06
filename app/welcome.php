@@ -5,12 +5,12 @@ include_once 'includes/config.php';
 if (!isset($_SESSION['id'])) {
     header('Location: login.php');
     exit;
-}
-
-
-if (strlen($_SESSION['id']==0)) {
-  header('location:logout.php');
-  } else{
+} else {
+    // Il controllo strlen($_SESSION['id']==0) era ridondante e errato.
+    // if (empty($_SESSION['id'])) { // Questo sarebbe un controllo più corretto se il primo non ci fosse
+    //   header('location:logout.php');
+    //   exit();
+    // }
     
     
 ?>
@@ -41,14 +41,48 @@ if (strlen($_SESSION['id']==0)) {
                         </ol>
 
 <?php
-$userid=$_SESSION['id'];
-$query=mysqli_query($con,"select * from users where id='$userid'");
-while($result=mysqli_fetch_array($query))
-{?>
+$userid = $_SESSION['id'];
+$userData = null; // Variabile per contenere i dati dell'utente
+
+// Query per recuperare dati utente e dati socio (se presenti) usando prepared statement
+$sql_user_socio = "SELECT u.id, u.fname, u.lname, u.id_socio, s.tessera_club_scadenza, s.tessera_club_numero
+                   FROM users u
+                   LEFT JOIN soci s ON u.id_socio = s.id
+                   WHERE u.id = ?";
+
+$stmt = mysqli_prepare($con, $sql_user_socio);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $userid);
+    mysqli_stmt_execute($stmt);
+    $query_exec_result = mysqli_stmt_get_result($stmt);
+    $userData = mysqli_fetch_assoc($query_exec_result); // Usa fetch_assoc
+    mysqli_stmt_close($stmt);
+} else {
+    error_log("Errore preparazione query welcome.php: " . mysqli_error($con));
+    // Potresti voler mostrare un messaggio di errore generico all'utente
+}
+
+// --- Recupero Prossima Manifestazione ---
+$prossima_manifestazione = null;
+$sql_prossima_manif = "SELECT id, titolo, data_inizio
+                       FROM manifestazioni
+                       WHERE data_inizio >= NOW()
+                       ORDER BY data_inizio ASC
+                       LIMIT 1";
+$result_prossima_manif = mysqli_query($con, $sql_prossima_manif);
+if ($result_prossima_manif && mysqli_num_rows($result_prossima_manif) > 0) {
+    $prossima_manifestazione = mysqli_fetch_assoc($result_prossima_manif);
+} elseif (!$result_prossima_manif) {
+    error_log("Errore query prossima manifestazione: " . mysqli_error($con));
+}
+// Non chiudiamo la connessione $con qui, verrà chiusa alla fine dello script se necessario o da altri include.
+
+if ($userData) { // Controlla se i dati dell'utente sono stati caricati
+?>
                         <div class="row" >
                             <div class="col-xl-5 col-md-6" >
                                 <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">Bentornato   <?php echo $result['fname'].' '.$result['lname'];?></div>
+                                    <div class="card-body">Bentornato   <?php echo htmlspecialchars($userData['fname']).' '.htmlspecialchars($userData['lname']);?></div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link" href="profile.php">Visualizza Profilo</a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -58,8 +92,6 @@ while($result=mysqli_fetch_array($query))
                                 
                             </div>
                         
-<?php } ?>
-
 
                         <!-- Card uguale a quella sopra, messa di fianco, con link per iscriversi alle manifestazioni disponibili-->
                         <div class="col-xl-5 col-md-6" >
@@ -101,10 +133,48 @@ while($result=mysqli_fetch_array($query))
                                 </div>
                             </div>
 
+                            <?php // Card per Scadenza Tessera ?>
+                            <?php if (!empty($userData['id_socio']) && !empty($userData['tessera_club_scadenza'])): ?>
+                            <div class="col-xl-5 col-md-6">
+                                <div class="card bg-info text-white mb-4">
+                                    <div class="card-body">
+                                        Scadenza Tessera Club:
+                                        <strong><?php echo date("d/m/Y", strtotime($userData['tessera_club_scadenza'])); ?></strong>
+                                        <?php if (!empty($userData['tessera_club_numero'])): ?>
+                                            <br><small>(Numero: <?php echo htmlspecialchars($userData['tessera_club_numero']); ?>)</small>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="profile.php">Dettagli Socio</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <?php // Card per Prossima Manifestazione ?>
+                            <?php if ($prossima_manifestazione): ?>
+                            <div class="col-xl-5 col-md-6">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">
+                                        Prossima Manifestazione:
+                                        <h5 class="mt-1 mb-0"><?php echo htmlspecialchars($prossima_manifestazione['titolo']); ?></h5>
+                                        <small>Data: <?php echo date("d/m/Y H:i", strtotime($prossima_manifestazione['data_inizio'])); ?></small>
+                                    </div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="manifestazioni.php#form-iscrizione-<?php echo $prossima_manifestazione['id']; ?>">Vedi Dettagli e Iscriviti</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
                         </div>
               
-                        </div>
-                        </div>
+<?php
+} else {
+    echo '<div class="alert alert-danger">Errore nel caricamento dei dati utente.</div>';
+} ?>
                     </div>
                 </main>
           <?php include 'includes/footer.php';?>
