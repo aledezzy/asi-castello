@@ -31,14 +31,40 @@ if (strlen($_SESSION['id'] ?? 0) == 0) {
 <?php
 $userid = $_SESSION['id'];
 $user_data = null; // Inizializza la variabile
+$socio_data = null; // Dati specifici del socio
+$auto_count = 0;    // Numero di auto registrate
 
-$stmt = mysqli_prepare($con, "SELECT fname, lname, email, contactno, posting_date FROM users WHERE id = ?");
+// Recupera dati utente e dati socio (se presenti)
+$sql = "SELECT u.fname, u.lname, u.email, u.contactno, u.posting_date, u.id_socio,
+               s.tessera_club_numero, s.tessera_club_scadenza, s.data_iscrizione_club,
+               s.has_tessera_asi, s.tessera_asi_numero
+        FROM users u
+        LEFT JOIN soci s ON u.id_socio = s.id
+        WHERE u.id = ?";
+
+$stmt = mysqli_prepare($con, $sql);
 if ($stmt) {
     mysqli_stmt_bind_param($stmt, "i", $userid);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $user_data = mysqli_fetch_assoc($result); // Ottieni i dati dell'utente
     mysqli_stmt_close($stmt);
+
+    // Se l'utente è un socio, recupera il conteggio delle auto
+    if ($user_data && $user_data['id_socio'] !== null) {
+        $id_socio = $user_data['id_socio'];
+        $stmt_auto = mysqli_prepare($con, "SELECT COUNT(*) as total_cars FROM auto WHERE id_socio = ?");
+        if ($stmt_auto) {
+            mysqli_stmt_bind_param($stmt_auto, "i", $id_socio);
+            mysqli_stmt_execute($stmt_auto);
+            $result_auto = mysqli_stmt_get_result($stmt_auto);
+            $auto_data = mysqli_fetch_assoc($result_auto);
+            $auto_count = $auto_data['total_cars'] ?? 0;
+            mysqli_stmt_close($stmt_auto);
+        } else {
+            error_log("Profile Auto Count Prepare Error: " . mysqli_error($con));
+        }
+    }
 } else {
     // Gestisci l'errore se la query non può essere preparata
     error_log("Profile Prepare Error: " . mysqli_error($con));
@@ -74,6 +100,42 @@ if ($user_data) { // Controlla se i dati sono stati recuperati con successo
                                        <th>Data Registrazione</th>
                                        <td colspan="3"><?php echo htmlspecialchars($user_data['posting_date']);?></td>
                                    </tr>
+
+                                   <?php if ($user_data['id_socio'] !== null): // Mostra solo se è socio ?>
+                                   <tr><td colspan="4" class="bg-light fw-bold text-center">Dati Socio</td></tr>
+                                   <tr>
+                                       <th>Numero Tessera Club</th>
+                                       <td><?php echo htmlspecialchars($user_data['tessera_club_numero'] ?: 'N/D'); ?></td>
+                                   </tr>
+                                   <tr>
+                                       <th>Scadenza Tessera Club</th>
+                                       <td><?php echo $user_data['tessera_club_scadenza'] ? htmlspecialchars(date("d/m/Y", strtotime($user_data['tessera_club_scadenza']))) : 'N/D'; ?></td>
+                                   </tr>
+                                   <tr>
+                                       <th>Data Iscrizione Club</th>
+                                       <td><?php echo $user_data['data_iscrizione_club'] ? htmlspecialchars(date("d/m/Y", strtotime($user_data['data_iscrizione_club']))) : 'N/D'; ?></td>
+                                   </tr>
+                                   <tr>
+                                       <th>Possiede Tessera ASI</th>
+                                       <td><?php echo $user_data['has_tessera_asi'] ? 'Sì' : 'No'; ?></td>
+                                   </tr>
+                                   <?php if ($user_data['has_tessera_asi']): ?>
+                                   <tr>
+                                       <th>Numero Tessera ASI</th>
+                                       <td><?php echo htmlspecialchars($user_data['tessera_asi_numero'] ?: 'N/D'); ?></td>
+                                   </tr>
+                                   <?php endif; ?>
+                                   <tr>
+                                       <th>Auto Registrate</th>
+                                       <td colspan="3"><?php echo $auto_count; ?></td>
+                                   </tr>
+                                   <?php else: ?>
+                                   <tr>
+                                       <td colspan="4" class="text-center">
+                                           Non sei ancora registrato come socio. <a href="diventa-socio.php">Diventa socio ora!</a>
+                                       </td>
+                                   </tr>
+                                   <?php endif; ?>
                                     </tbody>
                                 </table>
                             </div>
