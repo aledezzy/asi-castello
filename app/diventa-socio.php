@@ -46,17 +46,12 @@ if (isset($_POST['submit']) && !$is_already_socio && $user_data) {
 
     // Recupera dati Socio
     $codice_fiscale = trim(strtoupper($_POST['codice_fiscale'] ?? ''));
-    // Aggiungi qui il recupero degli altri campi socio dal form, se li hai aggiunti
-    // $indirizzo = trim($_POST['indirizzo'] ?? '');
-    // $citta = trim($_POST['citta'] ?? '');
-    // $provincia = trim($_POST['provincia'] ?? '');
-    // $cap = trim($_POST['cap'] ?? '');
-    // $telefono_socio = trim($_POST['telefono_socio'] ?? '');
-    // $email_pec = trim($_POST['email_pec'] ?? '');
-    // $tessera_club_numero = trim($_POST['tessera_club_numero'] ?? '');
-    // $tessera_club_scadenza_str = trim($_POST['tessera_club_scadenza'] ?? '');
-    // $tessera_asi_numero = trim($_POST['tessera_asi_numero'] ?? '');
-    // $note_socio = trim($_POST['note_socio'] ?? ''); // Se hai un campo note per il socio
+
+    // Campi per tessera ASI (il numero tessera club è generato automaticamente)
+    // $tessera_club_numero_input è stato rimosso
+    $has_tessera_asi_input = isset($_POST['has_tessera_asi_input']) ? 1 : 0;
+    $tessera_asi_numero_input = trim($_POST['tessera_asi_numero_input'] ?? '');
+
 
     // Recupera dati Auto
     $marca = trim($_POST['marca'] ?? '');
@@ -92,11 +87,12 @@ if (isset($_POST['submit']) && !$is_already_socio && $user_data) {
              error_log("Diventa Socio - Check CF Prepare Error: " . mysqli_error($con));
         }
     }
-    // Aggiungi qui le validazioni per gli altri campi socio (indirizzo, citta, etc.)
-    // if (empty($indirizzo)) $errori_form['indirizzo'] = "L'indirizzo è obbligatorio.";
-    // if (empty($citta)) $errori_form['citta'] = "La città è obbligatoria.";
-    // if (empty($provincia)) $errori_form['provincia'] = "La provincia è obbligatoria.";
-    // if (empty($cap)) $errori_form['cap'] = "Il CAP è obbligatorio.";
+
+    // Validazione nuovi campi socio
+    if ($has_tessera_asi_input && empty($tessera_asi_numero_input)) {
+        $errori_form['tessera_asi_numero_input'] = "Il Numero Tessera ASI è obbligatorio se si dichiara di possederla.";
+    }
+
 
     // --- Validazione Input Auto (obbligatoria) ---
     if (empty($marca)) $errori_form['marca'] = "La marca dell'auto è obbligatoria.";
@@ -144,26 +140,27 @@ if (isset($_POST['submit']) && !$is_already_socio && $user_data) {
         $commit = true;
         $new_socio_id = null;
 
+        // Prepara dati per DB
+        // Genera automaticamente il numero tessera club
+        $tessera_club_numero_db = "CLUB-" . date('YmdHis') . "-" . mt_rand(1000, 9999);
+        $tessera_club_scadenza_db = date('Y-m-d', strtotime('+1 year')); // Scadenza tra 1 anno
+        $has_tessera_asi_db = $has_tessera_asi_input;
+        $tessera_asi_numero_db = ($has_tessera_asi_db && !empty($tessera_asi_numero_input)) ? $tessera_asi_numero_input : null;
+
         // 1. Inserisci Socio
-        // Assicurati che la query INSERT INTO soci includa tutti i campi che hai nel form
-        // e che i tipi in bind_param corrispondano
-        $sql_insert_socio = "INSERT INTO soci (codice_fiscale, nome, cognome, data_iscrizione_club";
-        $sql_values_socio = "VALUES (?, ?, ?, NOW()";
-        $bind_types_socio = "sss";
-        $bind_params_socio = [$codice_fiscale, $user_data['fname'], $user_data['lname']];
-
-        // Aggiungi campi opzionali alla query dinamicamente (esempio)
-        // if (!empty($indirizzo)) { $sql_insert_socio .= ", indirizzo"; $sql_values_socio .= ", ?"; $bind_types_socio .= "s"; $bind_params_socio[] = $indirizzo; }
-        // if (!empty($citta)) { $sql_insert_socio .= ", citta"; $sql_values_socio .= ", ?"; $bind_types_socio .= "s"; $bind_params_socio[] = $citta; }
-        // ... aggiungi gli altri campi socio che hai nel form ...
-
-        $sql_insert_socio .= ") " . $sql_values_socio . ")";
+        $sql_insert_socio = "INSERT INTO soci (codice_fiscale, nome, cognome, data_iscrizione_club,
+                                              tessera_club_numero, tessera_club_scadenza,
+                                              has_tessera_asi, tessera_asi_numero)
+                             VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)";
 
         $stmt_insert_socio = mysqli_prepare($con, $sql_insert_socio);
 
         if ($stmt_insert_socio) {
-            // Usa l'operatore splat (...) per passare i parametri dinamicamente
-            mysqli_stmt_bind_param($stmt_insert_socio, $bind_types_socio, ...$bind_params_socio);
+            mysqli_stmt_bind_param($stmt_insert_socio, "sssssis",
+                $codice_fiscale, $user_data['fname'], $user_data['lname'],
+                $tessera_club_numero_db, $tessera_club_scadenza_db,
+                $has_tessera_asi_db, $tessera_asi_numero_db
+            );
 
             if (mysqli_stmt_execute($stmt_insert_socio)) {
                 $new_socio_id = mysqli_insert_id($con); // Recupera l'ID del nuovo socio
@@ -327,50 +324,23 @@ mysqli_close($con);
                                                 <div class="invalid-feedback"><?php echo $errori_form['codice_fiscale']; ?></div>
                                             <?php endif; ?>
                                         </div>
-                                        <!-- Rimuovi o commenta i campi socio non presenti nella tabella 'soci' -->
-                                        <!--
-                                        <div class="mb-3">
-                                            <label for="indirizzo" class="form-label">Indirizzo <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control <?php echo isset($errori_form['indirizzo']) ? 'is-invalid' : ''; ?>" id="indirizzo" name="indirizzo" value="<?php echo htmlspecialchars($_POST['indirizzo'] ?? ''); ?>" required>
-                                            <?php if (isset($errori_form['indirizzo'])): ?>
-                                                <div class="invalid-feedback"><?php echo $errori_form['indirizzo']; ?></div>
+
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="has_tessera_asi_input" name="has_tessera_asi_input" value="1" <?php echo (isset($_POST['has_tessera_asi_input'])) ? 'checked' : ''; ?> onchange="toggleAsiNumber()">
+                                            <label class="form-check-label" for="has_tessera_asi_input">Possiedo Tessera ASI</label>
+                                        </div>
+
+                                        <div class="mb-3 <?php echo (isset($_POST['has_tessera_asi_input'])) ? '' : 'd-none'; ?>" id="tessera_asi_numero_container">
+                                            <label for="tessera_asi_numero_input" class="form-label">Numero Tessera ASI <span class="text-danger" id="tessera_asi_required_star">*</span></label>
+                                            <input type="text" class="form-control <?php echo isset($errori_form['tessera_asi_numero_input']) ? 'is-invalid' : ''; ?>" id="tessera_asi_numero_input" name="tessera_asi_numero_input" value="<?php echo htmlspecialchars($_POST['tessera_asi_numero_input'] ?? ''); ?>">
+                                            <?php if (isset($errori_form['tessera_asi_numero_input'])): ?>
+                                                <div class="invalid-feedback"><?php echo $errori_form['tessera_asi_numero_input']; ?></div>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-5">
-                                                <label for="citta" class="form-label">Città <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control <?php echo isset($errori_form['citta']) ? 'is-invalid' : ''; ?>" id="citta" name="citta" value="<?php echo htmlspecialchars($_POST['citta'] ?? ''); ?>" required>
-                                                <?php if (isset($errori_form['citta'])): ?>
-                                                    <div class="invalid-feedback"><?php echo $errori_form['citta']; ?></div>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="provincia" class="form-label">Provincia (Sigla) <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control <?php echo isset($errori_form['provincia']) ? 'is-invalid' : ''; ?>" id="provincia" name="provincia" value="<?php echo htmlspecialchars($_POST['provincia'] ?? ''); ?>" required maxlength="2" style="text-transform: uppercase;">
-                                                 <?php if (isset($errori_form['provincia'])): ?>
-                                                    <div class="invalid-feedback"><?php echo $errori_form['provincia']; ?></div>
-                                                <?php endif; ?>
-                                            </div>
-                                             <div class="col-md-3">
-                                                <label for="cap" class="form-label">CAP <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control <?php echo isset($errori_form['cap']) ? 'is-invalid' : ''; ?>" id="cap" name="cap" value="<?php echo htmlspecialchars($_POST['cap'] ?? ''); ?>" required maxlength="5">
-                                                 <?php if (isset($errori_form['cap'])): ?>
-                                                    <div class="invalid-feedback"><?php echo $errori_form['cap']; ?></div>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="telefono_socio" class="form-label">Telefono Socio</label>
-                                                <input type="tel" class="form-control" id="telefono_socio" name="telefono_socio" value="<?php echo htmlspecialchars($_POST['telefono_socio'] ?? $user_data['contactno']); // Precompila con contactno utente ?>">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="email_pec" class="form-label">Email PEC (Opzionale)</label>
-                                                <input type="email" class="form-control" id="email_pec" name="email_pec" value="<?php echo htmlspecialchars($_POST['email_pec'] ?? ''); ?>">
-                                            </div>
-                                        </div>
-                                        -->
 
+                                        <div class="alert alert-info small">
+                                            La tua tessera club sarà valida per un anno a partire dalla data di registrazione. Il numero di tessera club verrà generato automaticamente.
+                                        </div>
 
                                         <hr>
                                         <h5><div class="card-header-section">Dati Prima Auto (Obbligatoria)</div></h5>
@@ -481,5 +451,21 @@ mysqli_close($con);
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
+        <script>
+            function toggleAsiNumber() {
+                const asiCheckbox = document.getElementById('has_tessera_asi_input');
+                const asiNumberContainer = document.getElementById('tessera_asi_numero_container');
+                const asiNumberInput = document.getElementById('tessera_asi_numero_input');
+                const asiRequiredStar = document.getElementById('tessera_asi_required_star');
+
+                if (asiCheckbox.checked) {
+                    asiNumberContainer.classList.remove('d-none');
+                    asiNumberInput.required = true;
+                } else {
+                    asiNumberContainer.classList.add('d-none');
+                    asiNumberInput.required = false;
+                }
+            }
+        </script>
     </body>
 </html>
