@@ -7,7 +7,7 @@
                           
     
                                 <a href="privacy.php" class="text-muted">Privacy Policy</a>
-                                <a href="terms.php" class="text-muted">Temrini &amp; e Condizioni</a>
+                                <a href="terms.php" class="text-muted">Termini &amp; Condizioni</a>
 
                             </div>
                         </div>
